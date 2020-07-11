@@ -5,6 +5,6 @@ package nl.tacticaldev.essentialsbot.utils;
 
 public class Token {
 
-    public static String TOKEN = "NzI5OTY0ODUyMTU1NTE0ODgw.XwQnDQ.EGAywJmWN908cd7zExkx8mFBO-E";
+    public static String TOKEN = "TOKEN";
 
 }
