@@ -1,0 +1,9 @@
+# This determines the command prefix when there are conflicts (/name:home, /name:help, etc.)
+name: EssentialsUltimateGeoIP
+main: nl.tacticaldev.essentials.geoip.EssentialsGeoIP
+# Note to developers: This next line cannot change, or the automatic versioning system will break.
+version: ${full.version}
+description: Shows the country or city of a user on login and /whois.
+authors: [TacticalDev]
+depend: [EssentialsUltimate]
+api-version: 1.13

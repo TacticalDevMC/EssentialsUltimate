@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>EssentialsUltimateParent</artifactId>
+        <groupId>nl.tacticaldev</groupId>
+        <version>1.0.1-BETA</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>EssentialsUltimateGeoIP</artifactId>
+
+    <build>
+        <finalName>EssentialsUltimateGeoIP-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <minimizeJar>true</minimizeJar>
+                    <artifactSet>
+                        <includes>
+                            <include>javatar:javatar</include>
+                            <include>com.maxmind.geoip2:geoip2</include>
+                            <include>com.maxmind.db:maxmind-db</include>
+                            <include>com.fasterxml.jackson.core:*</include>
+                        </includes>
+                    </artifactSet>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>nl.tacticaldev</groupId>
+            <artifactId>EssentialsUltimate</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.maxmind.geoip2/geoip2 -->
+        <dependency>
+            <groupId>com.maxmind.geoip2</groupId>
+            <artifactId>geoip2</artifactId>
+            <version>2.14.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/geoip2-2.14.0.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javatar/javatar -->
+<!--        <dependency>-->
+<!--            <groupId>javatar</groupId>-->
+<!--            <artifactId>javatar</artifactId>-->
+<!--            <version>2.5</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-archiver</artifactId>
+            <version>2.1</version>
+        </dependency>
+    </dependencies>
+
+</project>

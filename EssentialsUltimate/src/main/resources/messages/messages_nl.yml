@@ -1,0 +1,13 @@
+commands:
+  general:
+    playerNotFoundInDatabase: "%prefix% &cDe speler &4%s &ckon niet gevonden worden in onze database."
+    inCooldown: "%prefix% &cU zit in cooldown voor het commando &4%s &cu moet nog &4%s &csecond(en) wachten."
+  teleport:
+    tp:
+      args: "%prefix% &7Gebruik &c/teleport <player, location(x,y,z>&7."
+      teleportedToOffline: "%prefix% &aU bent successvol geteleporteerd naar de laatste locatie van de speler &2%s&a."
+      teleportedToOnline: "%prefix% &aU bent succesvol geteleporteerd naar &2%s&a."
+    tpoffline:
+      args: "%prefix% &7Gebruik: &c/teleportoffline <offlineplayer>&7."
+      playerIsOnline: "%prefix% &cDeze speler is niet offline."
+      teleportedToOffline: "%prefix% &aU bent nu bij de laatste locatie van de speler &2%s&a."

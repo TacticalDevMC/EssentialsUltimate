@@ -1,0 +1,18 @@
+name: EssentialsUltimate
+main: nl.tacticaldev.essentials.Essentials
+version: ${project.version}
+authors: [TacticalDev]
+api-version: 1.13
+description: De EssentialsUltimate plugin
+commands:
+  test:
+    description: "Test command"
+  teleport:
+    description: "Teleport to a player or a location"
+    aliases:
+      - tp
+  teleportoffline:
+    description: "Teleport to a player's offline location"
+    aliases:
+      - tpoffline
+      - tpoffl
