@@ -31,12 +31,12 @@ public class EvalCommand implements ICommand {
     }
 
     @Override
-    public void handle(List<String> args, GuildMessageReceivedEvent event) {
+    public void handle(String[] args, GuildMessageReceivedEvent event) {
         if (event.getAuthor().getIdLong() != Constants.OWNER) {
             return;
         }
 
-        if (args.isEmpty()) {
+        if (args.length == 0) {
             event.getChannel().sendMessage("Missing arguments").queue();
             return;
         }

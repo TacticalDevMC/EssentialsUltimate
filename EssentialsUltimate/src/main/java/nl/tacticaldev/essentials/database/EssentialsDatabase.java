@@ -58,12 +58,15 @@ public class EssentialsDatabase implements IDatabase {
         if (host.equals("")) {
             Logger.WARNING.log("Host must be set.");
             loaded = false;
+            return;
         } else if (user.equals("")) {
             Logger.WARNING.log("User must be set.");
             loaded = false;
+            return;
         } else if (password.equals("")) {
             Logger.WARNING.log("Password must be set.");
             loaded = false;
+            return;
         } else if (database.equals("")) {
             Logger.WARNING.log("Database must be set.");
             loaded = false;
@@ -78,6 +81,7 @@ public class EssentialsDatabase implements IDatabase {
             if (maxPoolSize <= minPoolSize) {
                 Logger.MYSQL.log("Maximum pool size can not be lower then the minimum pool size. (Min= " + minPoolSize + ")");
                 loaded = false;
+                return;
             } else if (minPoolSize >= maxPoolSize) {
                 Logger.MYSQL.log("Minimum pool size can not be higher then the maximum pool size. (Max= " + maxPoolSize + ")");
                 loaded = false;

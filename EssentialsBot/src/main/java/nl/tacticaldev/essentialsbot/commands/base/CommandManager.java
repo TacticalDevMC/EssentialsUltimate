@@ -1,7 +1,7 @@
 package nl.tacticaldev.essentialsbot.commands.base;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import nl.tacticaldev.essentialsbot.commands.UptimeCommand;
+import nl.tacticaldev.essentialsbot.commands.uptime.UptimeCommand;
 import nl.tacticaldev.essentialsbot.commands.essentials.EssentialsCommand;
 import nl.tacticaldev.essentialsbot.commands.help.HelpCommand;
 import nl.tacticaldev.essentialsbot.commands.owner.EvalCommand;
@@ -46,12 +46,11 @@ public class CommandManager {
     public void handleCommand(GuildMessageReceivedEvent event) {
         final String prefix = Constants.PREFIXES.get(event.getGuild().getIdLong());
 
-        final String[] split = event.getMessage().getContentRaw().replaceFirst(
+        final String[] args = event.getMessage().getContentRaw().replaceFirst(
                 "(?i)" + Pattern.quote(prefix), "").split("\\s+");
-        final String invoke = split[0].toLowerCase();
+        final String invoke = args[0].toLowerCase();
 
         if (commands.containsKey(invoke)) {
-            final List<String> args = Arrays.asList(split).subList(1, split.length);
 
             event.getChannel().sendTyping().queue();
             commands.get(invoke).handle(args, event);

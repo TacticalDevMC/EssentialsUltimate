@@ -15,6 +15,7 @@ import nl.tacticaldev.essentials.listeners.bukkit.custom.AFKStatusChangeEvent;
 import nl.tacticaldev.essentials.listeners.bukkit.custom.DatabasePlayerCreate;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerConnectionListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.afk.PlayerAFKMoveEvent;
+import nl.tacticaldev.essentials.managers.spawn.Spawns;
 import org.bukkit.plugin.PluginManager;
 
 public class EssentialsAPI implements IAPI {

@@ -37,4 +37,14 @@ public interface ISettings extends IConf {
 
     Integer getAutoAfk();
 
+    boolean isToSpawnOnJoin();
+
+    String getSpawnOnJoin();
+
+    String getNewbiesSpawn();
+
+    String getNewbiesMessage();
+
+    boolean isUseMysqlStorage();
+
 }

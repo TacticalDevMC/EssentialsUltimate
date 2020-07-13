@@ -6,8 +6,10 @@ package nl.tacticaldev.essentials.commands.test;
 import essentialsapi.utils.exception.CoreException;
 import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.commands.CoreCommand;
+import nl.tacticaldev.essentials.interfaces.IEssentials;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
+import org.bukkit.ChatColor;
 
 public class TestCommand extends CoreCommand {
 
@@ -25,12 +27,20 @@ public class TestCommand extends CoreCommand {
         IPermissionsHandler permissionsHandler = Essentials.getInstance().getPermissionsHandler();
 
         EssentialsPlayer player = new EssentialsPlayer(getPlayer());
+        IEssentials ess = Essentials.getInstance();
 
-        player.sendMessage("LastLocationWorld: " + player.getLastLocationWorld());
-        player.sendMessage("LastLocationX: " + player.getLastLocation("x"));
-        player.sendMessage("LastLocationY: " + player.getLastLocation("y"));
-        player.sendMessage("LastLocationZ: " + player.getLastLocation("z"));
-        player.sendMessage("LastLocationYaw: " + player.getLastLocation("yaw"));
-        player.sendMessage("LastLocationPitch: " + player.getLastLocation("pitch"));
+        switch (getArgs()[0]) {
+            case "create":
+
+                ess.getSpawns().addSpawn(getArgs()[1], player.getWorld(), player.getBlockX(), player.getBlockY(), player.getBlockZ(), player.getYaw(), player.getPitch());
+
+                player.sendMessage("Spawn named " + getArgs()[1] + " created!");
+                break;
+            case "get":
+                player.sendMessage(ess.getSpawns().getSpawnLocation(getArgs()[1]));
+                break;
+            default:
+                break;
+        }
     }
 }

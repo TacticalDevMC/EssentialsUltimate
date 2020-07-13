@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ICommand {
 
-    void handle(List<String> args, GuildMessageReceivedEvent event);
+    void handle(String[] args, GuildMessageReceivedEvent event);
 
     String getHelp();
 

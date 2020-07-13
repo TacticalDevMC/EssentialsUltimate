@@ -9,17 +9,22 @@ import nl.tacticaldev.essentials.interfaces.ISettings;
 import nl.tacticaldev.essentials.listeners.custom.DatabaseEvent;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Objects;
+
 public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        EssentialsPlayer base = new EssentialsPlayer(player);
+
         ISettings settings = Essentials.getInstance().getSettings();
 
         // CREATE DATABASE PLAYER
@@ -30,6 +35,30 @@ public class PlayerConnectionListener implements Listener {
         // JOIN MESSAGE
         if (settings.isCustomJoinMessage()) {
             event.setJoinMessage(Utils.replaceColor(settings.getCustomJoinMessage()).replace("{PLAYER}", player.getName()));
+        }
+
+        if (settings.isToSpawnOnJoin()) {
+            if (settings.getSpawnOnJoin().equals("none")) {
+                Location worldSpawnpoint = Objects.requireNonNull(Bukkit.getWorld(player.getWorld().getName())).getSpawnLocation();
+
+                base.teleport(worldSpawnpoint);
+            } else if (!(settings.getSpawnOnJoin().equals("none"))) {
+                // TODO: Get the setted spawn from the config.yml, end get the spawn name from the spawns.yml file
+            }
+        }
+
+        if (base.isExistsOnDatabase()) {
+            if (!base.hasPlayedBefore()) {
+                if (settings.getNewbiesSpawn().equals("none")) {
+                    Location worldSpawnpoint = Objects.requireNonNull(Bukkit.getWorld(player.getWorld().getName())).getSpawnLocation();
+
+                    base.teleport(worldSpawnpoint);
+                } else if (!(settings.getNewbiesSpawn().equals("none"))) {
+                    // TODO: Get the setted spawn from the config.yml, end get the spawn name from the spawns.yml file
+                }
+
+                Bukkit.broadcastMessage(Utils.replaceColor(settings.getNewbiesMessage().replace("{USERNAME}", base.getBase().getDisplayName()).replace("{PLAYER}", base.getBase().getName())));
+            }
         }
     }
 

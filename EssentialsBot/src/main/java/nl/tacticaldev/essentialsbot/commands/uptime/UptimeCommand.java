@@ -1,4 +1,4 @@
-package nl.tacticaldev.essentialsbot.commands;
+package nl.tacticaldev.essentialsbot.commands.uptime;
 // Plugin made by TacticalDev
 // Do not copy this plugin, and use it in you're own plugins.
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
@@ -12,8 +12,9 @@ import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
 public class UptimeCommand implements ICommand {
+
     @Override
-    public void handle(List<String> args, GuildMessageReceivedEvent event) {
+    public void handle(String[] args, GuildMessageReceivedEvent event) {
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         long uptime = runtimeMXBean.getUptime();
         long uptimeInSeconds = uptime / 1000;

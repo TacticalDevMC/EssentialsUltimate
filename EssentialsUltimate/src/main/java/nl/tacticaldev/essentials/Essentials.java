@@ -10,6 +10,7 @@ import nl.tacticaldev.essentials.interfaces.IDatabaseSettings;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
 import nl.tacticaldev.essentials.interfaces.ISettings;
 import nl.tacticaldev.essentials.managers.messages.MessageManager;
+import nl.tacticaldev.essentials.managers.spawn.Spawns;
 import nl.tacticaldev.essentials.perm.PermissionsHandler;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
 import nl.tacticaldev.essentials.settings.DatabaseSettings;
@@ -17,12 +18,16 @@ import nl.tacticaldev.essentials.settings.Settings;
 import essentialsapi.EssentialsAPI;
 import essentialsapi.interfaces.IAPI;
 import essentialsapi.utils.logger.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class Essentials extends JavaPlugin implements IEssentials {
 
@@ -32,6 +37,8 @@ public class Essentials extends JavaPlugin implements IEssentials {
     private static ISettings settings;
     private static IDatabaseSettings databaseSettings;
     private static IPermissionsHandler permissionsHandler;
+    private static Spawns spawns;
+
     private static MessageManager messageManager;
     private static Metrics metrics;
 
@@ -53,18 +60,27 @@ public class Essentials extends JavaPlugin implements IEssentials {
         confList.add(settings);
         confList.add(databaseSettings);
 
+        if (!settings.isUseMysqlStorage()) {
+            spawns = new Spawns(this);
+            confList.add(spawns);
+        }
+
         permissionsHandler = new PermissionsHandler(this);
         confList.add(permissionsHandler);
 
         messageManager = new MessageManager(this);
         confList.add(messageManager);
 
-
         Logger.INFO.log("----------------------");
         api.getDatabase().tryToStart();
         if (api.getDatabase().isLoaded()) {
             api.getDatabase().start();
             api.createTables();
+            if (settings.isUseMysqlStorage()) {
+                spawns = new Spawns(api.getDatabase());
+
+                confList.add(spawns);
+            }
             Logger.INFO.log("Database loaded!");
         }
 
@@ -82,6 +98,14 @@ public class Essentials extends JavaPlugin implements IEssentials {
         } else {
             getLogger().info("Metrics disabled per bStats config.");
         }
+
+        metrics.addCustomChart(new Metrics.SingleLineChart("players", new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                // (This is useless as there is already a player chart by default.)
+                return Bukkit.getOnlinePlayers().size();
+            }
+        }));
 
         this.end = System.currentTimeMillis();
         Logger.INFO.log("Plugin started! Took(" + (start - end) + "ms) ♥");
@@ -130,6 +154,11 @@ public class Essentials extends JavaPlugin implements IEssentials {
     @Override
     public IPermissionsHandler getPermissionsHandler() {
         return permissionsHandler;
+    }
+
+    @Override
+    public Spawns getSpawns() {
+        return spawns;
     }
 
     @Override

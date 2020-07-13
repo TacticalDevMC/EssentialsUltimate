@@ -223,4 +223,42 @@ public class EssentialsOfflinePlayer {
         }
     }
 
+    public boolean isBanned() {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "SELECT * FROM " + sqlManager.getTable("players") + " WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, getBase().getUniqueId().toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return true;
+            }
+
+            resultSet.close();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+        return true;
+    }
+
+    public void updateBanned(boolean bool) {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "UPDATE " + sqlManager.getTable("players") + " SET banned=? WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, String.valueOf(bool));
+            preparedStatement.setString(2, getBase().getUniqueId().toString());
+
+            preparedStatement.executeUpdate();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+    }
+
 }

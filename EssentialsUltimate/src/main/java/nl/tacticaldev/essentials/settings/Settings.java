@@ -100,4 +100,29 @@ public class Settings implements ISettings {
     public Integer getAutoAfk() {
         return config.getConfiguration().getInt("auto-afk", 300);
     }
+
+    @Override
+    public boolean isToSpawnOnJoin() {
+        return config.getConfiguration().getBoolean("onJoin.toSpawn", true);
+    }
+
+    @Override
+    public String getSpawnOnJoin() {
+        return config.getConfiguration().getString("onJoin.spawnOnJoin", "none");
+    }
+
+    @Override
+    public String getNewbiesSpawn() {
+        return config.getConfiguration().getString("newBies.spawn", "none");
+    }
+
+    @Override
+    public String getNewbiesMessage() {
+        return config.getConfiguration().getString("newBies.message", "&6{PLAYER} &5Is nieuw op de server!");
+    }
+
+    @Override
+    public boolean isUseMysqlStorage() {
+        return config.getConfiguration().getBoolean("useMysqlStorage", false);
+    }
 }

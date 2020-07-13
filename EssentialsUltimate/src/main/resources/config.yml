@@ -44,12 +44,23 @@ MySQL:
     min: 10
   tables:
     players: "essentials_players"
+    spawns: "essentials_spawns"
 
 # OnJoin functions
 onJoin:
   message:
     isCustom: false
     text: "&2&l{PLAYER} &ais de server gejoined."
+  # Do you wanna teleport to a spawn if you join the server?
+  toSpawn: true
+  # Use "none" to the world's spawnpoint, use the name of an exists spawn to teleport to it.
+  spawnOnJoin: "none"
+
+newBies:
+  # Use "none" to spawn on the World's spawnpoint, if you change "none" to a exists spawn, the player will be teleported to it
+  spawn: "none"
+  # Use {PLAYER} to get the player's name, use {USERNAME} to get the player's displayname
+  message: "&6{PLAYER} &5Is nieuw op de server!"
 
 # The delay, in seconds, required between /heal or /feed attempts.
 heal-cooldown: 60
@@ -119,3 +130,11 @@ currency-symbol: '$'
 # Enable this to make the currency symbol appear at the end of the amount rather than at the start.
 # For example, the euro symbol typically appears after the current amount.
 currency-symbol-suffix: false
+
+####################################################################
+# +--------------------------------------------------------------+ #
+# |                 EssentialsUltimate (Spawn)                   | #
+# +--------------------------------------------------------------+ #
+####################################################################
+# Set this to true to storage the spawns in a database.
+useMysqlStorage: false

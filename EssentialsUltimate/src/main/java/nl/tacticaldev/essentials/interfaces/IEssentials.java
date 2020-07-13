@@ -6,6 +6,7 @@ package nl.tacticaldev.essentials.interfaces;
 import essentialsapi.interfaces.IAPI;
 import nl.tacticaldev.essentials.Metrics;
 import nl.tacticaldev.essentials.managers.messages.MessageManager;
+import nl.tacticaldev.essentials.managers.spawn.Spawns;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -22,6 +23,8 @@ public interface IEssentials extends Plugin {
     IAPI getAPI();
 
     IPermissionsHandler getPermissionsHandler();
+
+    Spawns getSpawns();
 
     MessageManager getMessageManager();
 

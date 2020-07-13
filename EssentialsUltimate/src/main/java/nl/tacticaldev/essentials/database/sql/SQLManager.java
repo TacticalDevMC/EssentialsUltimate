@@ -30,6 +30,8 @@ public class SQLManager {
         switch (name) {
             case "players":
                 return section.getString("players");
+            case "spawns":
+                return section.getString("spawns");
             default:
                 break;
         }
@@ -60,6 +62,27 @@ public class SQLManager {
                     "totalWarns int, " +
                     "afk varchar(255), " +
                     "PRIMARY KEY (player_uuid))";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.execute();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+    }
+
+    public void createTableSpawns() {
+        try (Connection connection = database.getConnection()) {
+            String query = "CREATE TABLE IF NOT EXISTS " + getTable("spawns") + " " +
+                    "(name varchar(255), " +
+                    "World varchar(255), " +
+                    "x int, " +
+                    "y int, " +
+                    "z int, " +
+                    "yaw int, " +
+                    "pitch int, " +
+                    "PRIMARY KEY (name))";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.execute();

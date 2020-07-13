@@ -20,14 +20,14 @@ public class HelpCommand implements ICommand {
     }
 
     @Override
-    public void handle(List<String> args, GuildMessageReceivedEvent event) {
+    public void handle(String[] args, GuildMessageReceivedEvent event) {
 
-        if (args.isEmpty()) {
+        if (args.length == 0) {
             generateAndSendEmbed(event);
             return;
         }
 
-        String joined = String.join("", args);
+        String joined = args[0];
 
         ICommand command = manager.getCommand(joined);
 
