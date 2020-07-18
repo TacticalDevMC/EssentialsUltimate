@@ -5,6 +5,7 @@ package nl.tacticaldev.essentials.managers.spawn;
 
 import essentialsapi.config.EssentialsConfig;
 import essentialsapi.interfaces.IDatabase;
+import essentialsapi.utils.logger.Logger;
 import nl.tacticaldev.essentials.database.sql.SQLManager;
 import nl.tacticaldev.essentials.interfaces.IConf;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
@@ -14,8 +15,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class Spawns implements IConf {
 
@@ -23,6 +23,7 @@ public class Spawns implements IConf {
     private transient IDatabase database;
     private SQLManager sqlManager;
     private transient EssentialsConfig config;
+    private final Map<StringIgnoreCase, EssentialsConfig> spawnPoints = new HashMap<>();
 
     private ConfigurationSection spawns;
 
@@ -33,23 +34,31 @@ public class Spawns implements IConf {
         reloadConfig();
     }
 
-    public Spawns(IDatabase database) {
-        this.database = database;
-        sqlManager = new SQLManager(database);
-
-        sqlManager.createTableSpawns();
-    }
-
-
     public EssentialsConfig getConfig() {
         return config;
     }
 
     @Override
     public void reloadConfig() {
-        config.reload();
-
         spawns = _getSpawns();
+        spawnPoints.clear();
+        try {
+            String name = config.getConfiguration().getString("spawns");
+            config.reload();
+            if (name != null) {
+                spawnPoints.put(new StringIgnoreCase(name), config);
+            }
+        } catch (Exception ex) {
+            Logger.WARNING.log("Spawns load error!");
+        }
+    }
+
+    public boolean isEmpty() {
+        return spawnPoints.isEmpty();
+    }
+
+    public int getCount() {
+        return getList().size();
     }
 
     private ConfigurationSection _getSpawns() {
@@ -125,13 +134,52 @@ public class Spawns implements IConf {
         config.getConfiguration().set("spawns." + name + ".location.yaw", yaw);
         config.getConfiguration().set("spawns." + name + ".location.pitch", pitch);
         spawns = _getSpawns();
+
+        spawnPoints.put(new StringIgnoreCase(name), config);
         config.save();
     }
 
-    public void removeKit(String name) {
+    public void removeSpawn(String name) {
         config.getConfiguration().set("spawns." + name, null);
         spawns = _getSpawns();
+
+        spawnPoints.remove(new StringIgnoreCase(name));
         config.save();
+    }
+
+    public Collection<String> getList() {
+        final List<String> keys = new ArrayList<>();
+        for (StringIgnoreCase stringIgnoreCase : spawnPoints.keySet()) {
+            keys.add(stringIgnoreCase.getString());
+        }
+        keys.sort(String.CASE_INSENSITIVE_ORDER);
+        return keys;
+    }
+
+    private static class StringIgnoreCase {
+        private final String string;
+
+        public StringIgnoreCase(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public int hashCode() {
+            return getString().toLowerCase(Locale.ENGLISH).hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof StringIgnoreCase) {
+                return getString().equalsIgnoreCase(((StringIgnoreCase) o).getString());
+            }
+            return false;
+        }
+
+        public String getString() {
+            return string;
+        }
+
     }
 
     @Override

@@ -5,9 +5,12 @@ package nl.tacticaldev.essentials.interfaces;
 
 import essentialsapi.interfaces.IAPI;
 import nl.tacticaldev.essentials.Metrics;
+import nl.tacticaldev.essentials.managers.punishments.BanManager;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import nl.tacticaldev.essentials.managers.messages.MessageManager;
 import nl.tacticaldev.essentials.managers.spawn.Spawns;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
+import nl.tacticaldev.essentials.settings.interfaces.IDatabaseSettings;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,6 +30,8 @@ public interface IEssentials extends Plugin {
     Spawns getSpawns();
 
     MessageManager getMessageManager();
+
+    BanManager getBanManager();
 
     Metrics getMetrics();
 

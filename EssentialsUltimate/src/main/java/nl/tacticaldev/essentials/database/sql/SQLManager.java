@@ -30,8 +30,10 @@ public class SQLManager {
         switch (name) {
             case "players":
                 return section.getString("players");
-            case "spawns":
-                return section.getString("spawns");
+            case "bans":
+                return section.getString("bans");
+            case "history":
+                return section.getString("history");
             default:
                 break;
         }
@@ -72,17 +74,14 @@ public class SQLManager {
         }
     }
 
-    public void createTableSpawns() {
+    public void createTableBans() {
         try (Connection connection = database.getConnection()) {
-            String query = "CREATE TABLE IF NOT EXISTS " + getTable("spawns") + " " +
-                    "(name varchar(255), " +
-                    "World varchar(255), " +
-                    "x int, " +
-                    "y int, " +
-                    "z int, " +
-                    "yaw int, " +
-                    "pitch int, " +
-                    "PRIMARY KEY (name))";
+            String query = "CREATE TABLE IF NOT EXISTS " + getTable("bans") + " " +
+                    "(name TEXT(30) NOT NULL, " +
+                    "reason TEXT(100), " +
+                    "banner TEXT(30), " +
+                    "time BIGINT NOT NULL DEFAULT 0, " +
+                    "expires BIGINT NOT NULL DEFAULT 0)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.execute();
@@ -92,5 +91,23 @@ public class SQLManager {
             Logger.ERROR.log(e);
         }
     }
+
+    public void createTableHistory() {
+        try (Connection connection = database.getConnection()) {
+            String query = "CREATE TABLE IF NOT EXISTS " + getTable("history") + " " +
+                    "(created BIGINT NOT NULL, " +
+                    "message TEXT(100), " +
+                    "banner TEXT(30), " +
+                    "name TEXT(30))";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.execute();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+    }
+
 
 }

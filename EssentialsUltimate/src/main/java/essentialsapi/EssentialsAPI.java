@@ -11,11 +11,13 @@ import essentialsapi.interfaces.IAPI;
 import essentialsapi.interfaces.IDatabase;
 import essentialsapi.utils.menu.MenuManager;
 import essentialsapi.utils.menu.item.InventoryCheck;
-import nl.tacticaldev.essentials.listeners.bukkit.custom.AFKStatusChangeEvent;
 import nl.tacticaldev.essentials.listeners.bukkit.custom.DatabasePlayerCreate;
+import nl.tacticaldev.essentials.listeners.bukkit.custom.SpawnSignCreateEvent;
+import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerBlockBreakListener;
+import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerConnectBanListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerConnectionListener;
-import nl.tacticaldev.essentials.listeners.bukkit.players.afk.PlayerAFKMoveEvent;
-import nl.tacticaldev.essentials.managers.spawn.Spawns;
+import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerInteractSignListener;
+import nl.tacticaldev.essentials.listeners.bukkit.players.signs.SignChangeListener;
 import org.bukkit.plugin.PluginManager;
 
 public class EssentialsAPI implements IAPI {
@@ -41,9 +43,20 @@ public class EssentialsAPI implements IAPI {
 
         // PLAYERS
         pm.registerEvents(new PlayerConnectionListener(), ess);
+        pm.registerEvents(new PlayerBlockBreakListener(), ess);
+        pm.registerEvents(new PlayerConnectBanListener(), ess);
 
         // CUSTOM
         pm.registerEvents(new DatabasePlayerCreate(), ess);
+
+        if (ess.getSettings().isUsingEssentialsSigns()) {
+            pm.registerEvents(new SignChangeListener(), ess);
+            pm.registerEvents(new PlayerInteractSignListener(), ess);
+
+            if (ess.getSettings().getEnabledSigns().contains("spawn")) {
+                pm.registerEvents(new SpawnSignCreateEvent(), ess);
+            }
+        }
     }
 
     @Override
@@ -53,6 +66,7 @@ public class EssentialsAPI implements IAPI {
         commandModule.loadTestCommands();
         commandModule.loadTeleportCommands();
         commandModule.loadDefaultCommands();
+        commandModule.loadPunishmentsCommands();
     }
 
     @Override
@@ -60,5 +74,7 @@ public class EssentialsAPI implements IAPI {
         SQLManager sqlManager = new SQLManager(getDatabase());
 
         sqlManager.createTablePlayers();
+        sqlManager.createTableBans();
+        sqlManager.createTableHistory();
     }
 }

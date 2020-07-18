@@ -1,9 +1,10 @@
-package nl.tacticaldev.essentials.interfaces;
+package nl.tacticaldev.essentials.settings.interfaces;
 // Plugin made by TacticalDev
 // Do not copy this plugin, and use it in you're own plugins.
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
 
 import essentialsapi.config.EssentialsConfig;
+import nl.tacticaldev.essentials.interfaces.IConf;
 
 public interface IDatabaseSettings extends IConf {
 
@@ -27,6 +28,6 @@ public interface IDatabaseSettings extends IConf {
 
     Integer getDBMinPoolSize();
 
-    String getTable(String table);
+    boolean isReadOnly();
 
 }

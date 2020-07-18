@@ -8,10 +8,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.database.sql.SQLManager;
 import nl.tacticaldev.essentials.database.tables.PlayerTable;
-import nl.tacticaldev.essentials.interfaces.ISettings;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -81,6 +80,12 @@ public class EssentialsPlayer {
 
     public void teleportWorld(World world) {
         base.teleport(world.getSpawnLocation());
+    }
+
+    public void teleportLocation(int x, int y, int z) {
+        Location location = new Location(getLocation().getWorld(), x, y, z);
+
+        teleport(location);
     }
 
     public void teleport(Entity entity) {

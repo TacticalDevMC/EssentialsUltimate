@@ -4,8 +4,10 @@ package nl.tacticaldev.essentials.settings;
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
 
 import nl.tacticaldev.essentials.interfaces.IEssentials;
-import nl.tacticaldev.essentials.interfaces.ISettings;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import essentialsapi.config.EssentialsConfig;
+
+import java.util.List;
 
 import static essentialsapi.utils.Utils.replaceColor;
 
@@ -122,7 +124,57 @@ public class Settings implements ISettings {
     }
 
     @Override
-    public boolean isUseMysqlStorage() {
-        return config.getConfiguration().getBoolean("useMysqlStorage", false);
+    public String getDefaultSpawn() {
+        return config.getConfiguration().getString("default-spawn", "none");
+    }
+
+    @Override
+    public String getDefaultAppealMessage() {
+        return config.getConfiguration().getString("default-appeal-message", "none");
+    }
+
+    @Override
+    public String getBannedKickMessage() {
+        return config.getConfiguration().getString("disconnection.you-are-banned", "&fU bent verbannen!\n Reason: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}");
+    }
+
+    @Override
+    public Integer getHistoryExpireyMinutes() {
+        return config.getConfiguration().getInt("history-expirey.minutes", 10080);
+    }
+
+    @Override
+    public String getDefaultReason() {
+        return config.getConfiguration().getString("default-reason", "Misconduct");
+    }
+
+    @Override
+    public String getPlayerBannedAnnouncement() {
+        return config.getConfiguration().getString("announcement.player-was-banned", "&a{banner}&f banned &a{name}&f voor &a'{reason}'&f.");
+    }
+
+    @Override
+    public String getTempBanKickMessage() {
+        return config.getConfiguration().getString("disconnection.you-are-temp-banned", "&fU bent voor een tijdje verbannen!\nReason: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}");
+    }
+
+    @Override
+    public Integer getMaxTempbanTime() {
+        return config.getConfiguration().getInt("MaxTempbanTime", 604800);
+    }
+
+    @Override
+    public String getPlayerTempBannedAnnouncement() {
+        return config.getConfiguration().getString("announcement.player-was-tempbanned", "&a{banner}&f tempbanned &a{name}&f voor {time} voor &a'{reason}'&f");
+    }
+
+    @Override
+    public boolean isUsingEssentialsSigns() {
+        return config.getConfiguration().getBoolean("using-essentials-signs", true);
+    }
+
+    @Override
+    public List<String> getEnabledSigns() {
+        return config.getConfiguration().getStringList("enabledSigns");
     }
 }

@@ -6,7 +6,10 @@ package essentialsapi.utils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import nl.tacticaldev.essentials.Essentials;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -16,6 +19,7 @@ import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -23,10 +27,18 @@ public class Utils {
     @Setter
     private static Utils instance;
 
+    private static Pattern IP_PATTERN;
+    private static Pattern VALID_CHARS_PATTERN;
+
     public static Sound SOUND_LEVEL_UP = getVersion().startsWith("v1_8") ? Sound.valueOf("LEVEL_UP") : Sound.valueOf("ENTITY_PLAYER_LEVELUP");
     public static Sound SOUND_CHICKEN_EGG = getVersion().startsWith("v1_8") ? Sound.valueOf("CHICKEN_EGG_POP") : Sound.valueOf("ENTITY_CHICKEN_EGG");
     private final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private SecureRandom rnd = new SecureRandom();
+
+    static {
+        Utils.IP_PATTERN = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+        Utils.VALID_CHARS_PATTERN = Pattern.compile("[A-Za-z0-9_]");
+    }
 
     public static String getVersion() {
         return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
@@ -38,6 +50,47 @@ public class Utils {
 
     public static String capitalCase(final String input) {
         return input == null || input.length() == 0 ? input : input.toUpperCase(Locale.ENGLISH).charAt(0) + input.toLowerCase(Locale.ENGLISH).substring(1);
+    }
+
+    public static boolean isSilent(final String[] args) {
+        if (args == null) {
+            return false;
+        }
+        for (int i = 0; i < args.length; ++i) {
+            if (args[i].equalsIgnoreCase("-s")) {
+                for (int j = i; j < args.length - 1; ++j) {
+                    args[j] = args[j + 1];
+                }
+                args[args.length - 1] = "";
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String buildReason(final String[] args) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < args.length; ++i) {
+            sb.append(args[i]);
+            sb.append(" ");
+        }
+        String s = sb.toString().trim();
+        s = s.replaceAll("\\\\n", "\n");
+        if (s.isEmpty()) {
+            return Essentials.getInstance().getBanManager().defaultReason;
+        }
+        return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    public static String getName(final CommandSender s) {
+        if (s instanceof Player) {
+            return ((Player) s).getName();
+        }
+        return "Console";
+    }
+
+    public static boolean isIP(final String s) {
+        return Utils.IP_PATTERN.matcher(s).matches();
     }
 
     public static String replaceColor(String input) {

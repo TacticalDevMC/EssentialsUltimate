@@ -6,27 +6,24 @@ package nl.tacticaldev.essentials;
 import lombok.AccessLevel;
 import lombok.Getter;
 import nl.tacticaldev.essentials.interfaces.IConf;
-import nl.tacticaldev.essentials.interfaces.IDatabaseSettings;
+import nl.tacticaldev.essentials.managers.punishments.BanManager;
+import nl.tacticaldev.essentials.settings.interfaces.IDatabaseSettings;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
-import nl.tacticaldev.essentials.interfaces.ISettings;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import nl.tacticaldev.essentials.managers.messages.MessageManager;
 import nl.tacticaldev.essentials.managers.spawn.Spawns;
-import nl.tacticaldev.essentials.perm.PermissionsHandler;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
 import nl.tacticaldev.essentials.settings.DatabaseSettings;
 import nl.tacticaldev.essentials.settings.Settings;
 import essentialsapi.EssentialsAPI;
 import essentialsapi.interfaces.IAPI;
 import essentialsapi.utils.logger.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Essentials extends JavaPlugin implements IEssentials {
@@ -40,8 +37,9 @@ public class Essentials extends JavaPlugin implements IEssentials {
     private static Spawns spawns;
 
     private static MessageManager messageManager;
-    private static Metrics metrics;
+    private static BanManager banManager;
 
+    private static Metrics metrics;
     private EssentialsAPI api;
     private List<IConf> confList = new ArrayList<IConf>();
 
@@ -58,31 +56,26 @@ public class Essentials extends JavaPlugin implements IEssentials {
         settings = new Settings(this);
         databaseSettings = new DatabaseSettings(this);
         confList.add(settings);
-        confList.add(databaseSettings);
 
-        if (!settings.isUseMysqlStorage()) {
-            spawns = new Spawns(this);
-            confList.add(spawns);
-        }
-
-        permissionsHandler = new PermissionsHandler(this);
-        confList.add(permissionsHandler);
+//        permissionsHandler = new PermissionsHandler(this);
+//        confList.add(permissionsHandler);
 
         messageManager = new MessageManager(this);
         confList.add(messageManager);
+
+        spawns = new Spawns(this);
+        confList.add(spawns);
+
 
         Logger.INFO.log("----------------------");
         api.getDatabase().tryToStart();
         if (api.getDatabase().isLoaded()) {
             api.getDatabase().start();
             api.createTables();
-            if (settings.isUseMysqlStorage()) {
-                spawns = new Spawns(api.getDatabase());
-
-                confList.add(spawns);
-            }
             Logger.INFO.log("Database loaded!");
         }
+
+        banManager = new BanManager(this);
 
         api.loadListeners(this);
         Logger.INFO.log("Listeners loaded!");
@@ -99,13 +92,17 @@ public class Essentials extends JavaPlugin implements IEssentials {
             getLogger().info("Metrics disabled per bStats config.");
         }
 
-        metrics.addCustomChart(new Metrics.SingleLineChart("players", new Callable<Integer>() {
+        metrics.addCustomChart(new Metrics.SimplePie("used_language", new Callable<String>() {
             @Override
-            public Integer call() throws Exception {
-                // (This is useless as there is already a player chart by default.)
-                return Bukkit.getOnlinePlayers().size();
+            public String call() throws Exception {
+                return settings.getLanguage();
             }
         }));
+
+        for (IConf iConf : confList) {
+            iConf.reloadConfig();
+            Logger.CONFIG.log("Config " + iConf.getName() + " reloaded!");
+        }
 
         this.end = System.currentTimeMillis();
         Logger.INFO.log("Plugin started! Took(" + (start - end) + "ms) ♥");
@@ -164,6 +161,11 @@ public class Essentials extends JavaPlugin implements IEssentials {
     @Override
     public MessageManager getMessageManager() {
         return messageManager;
+    }
+
+    @Override
+    public BanManager getBanManager() {
+        return banManager;
     }
 
     @Override

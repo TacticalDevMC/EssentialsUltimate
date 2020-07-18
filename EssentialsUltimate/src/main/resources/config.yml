@@ -19,6 +19,8 @@
 # +--------------------------------------------------------------+ #
 ####################################################################
 
+version: 1.0.1
+
 # The plugins's prefix, if you change this, change you the prefix of all messages.
 prefix: "&6&lESSENTIALS &8● "
 
@@ -30,6 +32,11 @@ debug: false
 
 # Language to customize messages, use /lang change <lang> to change the language, use /lang list to see all the languages.
 language: "NL"
+
+#Should we check that we're running the latest version of EssentialsUltimate?
+#This does NOT update it for you, it just notifies you in the console when
+#the server boots up if there is a new version available.
+check-for-updates: true
 
 # MySQL storage
 MySQL:
@@ -44,7 +51,9 @@ MySQL:
     min: 10
   tables:
     players: "essentials_players"
-    spawns: "essentials_spawns"
+    bans: "essentials_bans"
+    history: "essentials_history"
+  read-only: false
 
 # OnJoin functions
 onJoin:
@@ -136,5 +145,42 @@ currency-symbol-suffix: false
 # |                 EssentialsUltimate (Spawn)                   | #
 # +--------------------------------------------------------------+ #
 ####################################################################
-# Set this to true to storage the spawns in a database.
-useMysqlStorage: false
+# Do you wanna use the Default spawn? If the default-spawn is set to none, if the player execute the command '/spawn' the player will be teleported to the World's spawnpoint
+# If default-spawn is set to an existing spawn the player will be teleported to that spawn.
+default-spawn: "none"
+
+####################################################################
+# +--------------------------------------------------------------+ #
+# |                 EssentialsUltimate (Punishments)             | #
+# +--------------------------------------------------------------+ #
+####################################################################
+default-appeal-message: "none"
+default-reason: "Misconduct"
+
+disconnection:
+  you-are-banned: "&fU bent verbannen!\n Reason: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}"
+  you-are-temp-banned: "&fU bent voor een tijdje verbannen!\nReason: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}"
+
+announcement:
+  player-was-banned: "&a{banner}&f banned &a{name}&f voor &a'{reason}'&f."
+  player-was-tempbanned: "&a{banner}&f tempbanned &a{name}&f voor {time} voor &a'{reason}'&f"
+
+history-expirey-minutes: 10080 #1 week.
+#Maximum tempban time, in seconds. 604800 is a week.
+MaxTempbanTime: 604800
+
+####################################################################
+# +--------------------------------------------------------------+ #
+# |                 EssentialsUltimate (Signs)                   | #
+# +--------------------------------------------------------------+ #
+####################################################################
+# Control if you will be use the EssentialsSigns methods.
+using-essentials-signs: true
+
+# Essentials Sign Control
+# See #soon for instructions on how to use these.
+# Color is not an actual sign, it's for enabling using color codes on signs, when the correct permissions are given.
+
+enabledSigns:
+#  - color
+#  - spawn

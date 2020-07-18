@@ -1,5 +1,8 @@
 package essentialsapi.utils.essentialsutils;
 
+import nl.tacticaldev.essentials.Essentials;
+import nl.tacticaldev.essentials.managers.messages.MessageManager;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
@@ -154,4 +157,94 @@ public class DateUtil {
         }
         return sb.toString().trim();
     }
+
+    public static String getTimeUntil(long epoch) {
+        epoch -= System.currentTimeMillis();
+        return getTime(epoch);
+    }
+
+    public static String getTime(long ms) {
+        MessageManager message = Essentials.getInstance().getMessageManager();
+
+        ms = (long) Math.ceil(ms / 1000.0D);
+        StringBuilder sb = new StringBuilder(40);
+        if (ms / 31449600L > 0L) {
+            final long years = ms / 31449600L;
+            if (years > 100L) {
+                return "Never";
+            }
+            sb.append(String.valueOf(years) + " " + message.get("times.years") + ((years == 1L) ? " " : "s "));
+            ms -= years * 31449600L;
+        }
+        if (ms / 2620800L > 0L) {
+            final long months = ms / 2620800L;
+            sb.append(String.valueOf(months) + " " + message.get("times.months") + ((months == 1L) ? " " : "es "));
+            ms -= months * 2620800L;
+        }
+        if (ms / 604800L > 0L) {
+            final long weeks = ms / 604800L;
+            sb.append(String.valueOf(weeks) + " " + message.get("times.weeks") + ((weeks == 1L) ? " " : "s "));
+            ms -= weeks * 604800L;
+        }
+        if (ms / 86400L > 0L) {
+            final long days = ms / 86400L;
+            sb.append(String.valueOf(days) + " " + message.get("times.days") + ((days == 1L) ? " " : "s "));
+            ms -= days * 86400L;
+        }
+        if (ms / 3600L > 0L) {
+            final long hours = ms / 3600L;
+            sb.append(String.valueOf(hours) + " " + message.get("times.hours") + ((hours == 1L) ? " " : "s "));
+            ms -= hours * 3600L;
+        }
+        if (ms / 60L > 0L) {
+            final long minutes = ms / 60L;
+            sb.append(String.valueOf(minutes) + " " + message.get("times.minutes") + ((minutes == 1L) ? " " : "s "));
+            ms -= minutes * 60L;
+        }
+        if (ms > 0L) {
+            sb.append(String.valueOf(ms) + " " + message.get("times.seconds") + ((ms == 1L) ? " " : "s "));
+        }
+        if (sb.length() > 1) {
+            sb.replace(sb.length() - 1, sb.length(), "");
+        } else {
+            sb = new StringBuilder("N/A");
+        }
+        return sb.toString();
+    }
+
+    public static long getTime(final String[] args) {
+        MessageManager message = Essentials.getInstance().getMessageManager();
+
+        final String arg = args[2].toLowerCase();
+        int modifier;
+        if (message.get("times.hours").startsWith(arg)) {
+            modifier = 3600;
+        } else if (message.get("times.minutes").startsWith(arg)) {
+            modifier = 60;
+        } else if (message.get("times.seconds").startsWith(arg)) {
+            modifier = 1;
+        } else if (message.get("times.weeks").startsWith(arg)) {
+            modifier = 604800;
+        } else if (message.get("times.days").startsWith(arg)) {
+            modifier = 86400;
+        } else if (message.get("times.years").startsWith(arg)) {
+            modifier = 31449600;
+        } else if (message.get("times.months").startsWith(arg)) {
+            modifier = 2620800;
+        } else {
+            modifier = 0;
+        }
+        double time = 0.0D;
+        try {
+            time = Double.parseDouble(args[1]);
+        } catch (NumberFormatException ex) {
+        }
+        for (int j = 0; j < args.length - 2; ++j) {
+            args[j] = args[(j + 2)];
+        }
+        args[args.length - 1] = "";
+        args[args.length - 2] = "";
+        return (long) (modifier * time) * 1000L;
+    }
+
 }

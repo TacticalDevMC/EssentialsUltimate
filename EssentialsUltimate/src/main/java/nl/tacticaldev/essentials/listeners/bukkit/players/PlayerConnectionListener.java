@@ -5,8 +5,10 @@ package nl.tacticaldev.essentials.listeners.bukkit.players;
 
 import essentialsapi.utils.Utils;
 import nl.tacticaldev.essentials.Essentials;
-import nl.tacticaldev.essentials.interfaces.ISettings;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import nl.tacticaldev.essentials.listeners.custom.DatabaseEvent;
+import nl.tacticaldev.essentials.managers.spawn.Spawns;
+import nl.tacticaldev.essentials.managers.spawn.exception.SpawnNotFoundException;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,11 +23,12 @@ import java.util.Objects;
 public class PlayerConnectionListener implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) throws SpawnNotFoundException {
         Player player = event.getPlayer();
         EssentialsPlayer base = new EssentialsPlayer(player);
 
         ISettings settings = Essentials.getInstance().getSettings();
+        Spawns spawns = Essentials.getInstance().getSpawns();
 
         // CREATE DATABASE PLAYER
         DatabaseEvent databaseEvent = new DatabaseEvent(player);
@@ -43,7 +46,15 @@ public class PlayerConnectionListener implements Listener {
 
                 base.teleport(worldSpawnpoint);
             } else if (!(settings.getSpawnOnJoin().equals("none"))) {
-                // TODO: Get the setted spawn from the config.yml, end get the spawn name from the spawns.yml file
+                String spawnName = settings.getSpawnOnJoin();
+
+                if (spawns.getSpawn(spawnName) == null) {
+                    throw new SpawnNotFoundException("The spawn '" + spawnName + "' can't be found!");
+                }
+
+                Location loc = spawns.getSpawnLocation(spawnName);
+
+                base.teleport(loc);
             }
         }
 
@@ -55,6 +66,15 @@ public class PlayerConnectionListener implements Listener {
                     base.teleport(worldSpawnpoint);
                 } else if (!(settings.getNewbiesSpawn().equals("none"))) {
                     // TODO: Get the setted spawn from the config.yml, end get the spawn name from the spawns.yml file
+                    String spawnName = settings.getNewbiesSpawn();
+
+                    if (spawns.getSpawn(spawnName) == null) {
+                        throw new SpawnNotFoundException("The spawn '" + spawnName + "' can't be found!");
+                    }
+
+                    Location loc = spawns.getSpawnLocation(spawnName);
+
+                    base.teleport(loc);
                 }
 
                 Bukkit.broadcastMessage(Utils.replaceColor(settings.getNewbiesMessage().replace("{USERNAME}", base.getBase().getDisplayName()).replace("{PLAYER}", base.getBase().getName())));

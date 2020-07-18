@@ -16,3 +16,37 @@ commands:
     aliases:
       - tpoffline
       - tpoffl
+  setspawn:
+    description: "Setspawn command"
+    aliases:
+      - spawnset
+      - sspawn
+  spawns:
+    description: "List all the spawns"
+    aliases:
+      - spawnslist
+      - listspawns
+  spawn:
+    description: "Teleport to a spawn"
+    aliases:
+      - telespawn
+      - spawntele
+      - spawnteleport
+  deletespawn:
+    description: "Delete a spawn"
+    aliases:
+      - delspawn
+      - spawndelete
+      - spawndele
+  ban:
+    description: "Ban a player"
+    aliases:
+      - eban
+  tempban:
+    description: "TemppBan a player"
+    aliases:
+      - etempban
+      - tban
+      - bantemp
+      - ebantemp
+      - etban

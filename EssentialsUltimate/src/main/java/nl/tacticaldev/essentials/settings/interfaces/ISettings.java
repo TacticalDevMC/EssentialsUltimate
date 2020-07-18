@@ -1,9 +1,12 @@
-package nl.tacticaldev.essentials.interfaces;
+package nl.tacticaldev.essentials.settings.interfaces;
 // Plugin made by TacticalDev
 // Do not copy this plugin, and use it in you're own plugins.
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
 
 import essentialsapi.config.EssentialsConfig;
+import nl.tacticaldev.essentials.interfaces.IConf;
+
+import java.util.List;
 
 public interface ISettings extends IConf {
 
@@ -45,6 +48,26 @@ public interface ISettings extends IConf {
 
     String getNewbiesMessage();
 
-    boolean isUseMysqlStorage();
+    String getDefaultSpawn();
+
+    String getDefaultAppealMessage();
+
+    String getBannedKickMessage();
+
+    Integer getHistoryExpireyMinutes();
+
+    String getDefaultReason();
+
+    String getPlayerBannedAnnouncement();
+
+    String getTempBanKickMessage();
+
+    Integer getMaxTempbanTime();
+
+    String getPlayerTempBannedAnnouncement();
+
+    boolean isUsingEssentialsSigns();
+
+    List<String> getEnabledSigns();
 
 }

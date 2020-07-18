@@ -4,7 +4,7 @@ package nl.tacticaldev.essentials.settings;
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
 
 import essentialsapi.config.EssentialsConfig;
-import nl.tacticaldev.essentials.interfaces.IDatabaseSettings;
+import nl.tacticaldev.essentials.settings.interfaces.IDatabaseSettings;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -66,16 +66,8 @@ public class DatabaseSettings implements IDatabaseSettings {
     }
 
     @Override
-    public String getTable(String table) {
-        ConfigurationSection section = config.getConfiguration().getConfigurationSection("MySQL.tables");
-
-        switch (table) {
-            case "players":
-                return section.getString("players");
-            default:
-                break;
-        }
-        return null;
+    public boolean isReadOnly() {
+        return config.getConfiguration().getBoolean("MySQL.read-only", false);
     }
 
     @Override
