@@ -70,4 +70,8 @@ public interface ISettings extends IConf {
 
     List<String> getEnabledSigns();
 
+    boolean isUsingCooldownsOnSign();
+
+    Integer getCooldownOnSign();
+
 }

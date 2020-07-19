@@ -50,3 +50,7 @@ commands:
       - bantemp
       - ebantemp
       - etban
+  heal:
+    description: "Heal a player"
+    aliases:
+      - eheal

@@ -177,4 +177,14 @@ public class Settings implements ISettings {
     public List<String> getEnabledSigns() {
         return config.getConfiguration().getStringList("enabledSigns");
     }
+
+    @Override
+    public boolean isUsingCooldownsOnSign() {
+        return config.getConfiguration().getBoolean("use-cooldowns-on-signs", false);
+    }
+
+    @Override
+    public Integer getCooldownOnSign() {
+        return config.getConfiguration().getInt("cooldown-on-sign", 3);
+    }
 }

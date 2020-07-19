@@ -1,13 +1,57 @@
 commands:
   general:
     playerNotFoundInDatabase: "%prefix% &cDe speler &4%s &ckon niet gevonden worden in onze database."
+    playerError: "%prefix% &cDe speler &4%s &ckon niet gevonden worden!"
     inCooldown: "%prefix% &cU zit in cooldown voor het commando &4%s &cu moet nog &4%s &csecond(en) wachten."
   teleport:
     tp:
-      args: "%prefix% &7Gebruik &c/teleport <player, location(x,y,z>&7."
+      args: "%prefix% &7Gebruik &c/teleport <player, location(X:x, Y:y, Z:z>&7."
       teleportedToOffline: "%prefix% &aU bent successvol geteleporteerd naar de laatste locatie van de speler &2%s&a."
       teleportedToOnline: "%prefix% &aU bent succesvol geteleporteerd naar &2%s&a."
     tpoffline:
       args: "%prefix% &7Gebruik: &c/teleportoffline <offlineplayer>&7."
       playerIsOnline: "%prefix% &cDeze speler is niet offline."
       teleportedToOffline: "%prefix% &aU bent nu bij de laatste locatie van de speler &2%s&a."
+  setspawn:
+    args: "%prefix% &7Gebruik: &c/setspawn <name>&7."
+    spawnAlreadyExists: "%prefix% &cDe spawn met de naam &4%s &cbestaat al."
+    spawnSet: "%prefix% &aU hebt succesvol een spawn aangemaakt op uw locatie met de naam &2%s&a."
+  spawns:
+    noSpawnsFound: "%prefix% &cEr zijn geen spawns om te tonen."
+    listFormat: "&6Spawns list(%s): &c%s"
+  spawn:
+    teleportedToDefault: "%prefix% &aU bent succesvol geteleporteerd naar de default spawn."
+    defaultSpawnNotFound: "%prefix% &cDe default spawn kon niet gevonden worden."
+    spawnNotExists: "%prefix% &cDe spawn &4%s &ckon niet gevonden worden."
+    teleported: "%prefix% &aU bent geteleporteerd naar de spawn &2%s&a."
+  deletespawn:
+    args: "%prefix% &7Gebruik: &c/deletespawn <name>&7."
+    spawnNotFound: "%prefix% &cDe spawn &4%s &ckon niet gevonden worden!"
+    spawnDeleted: "%prefix% &aDe spawn &2%s &ais succesvol verwijderd!"
+  ban:
+    args: "%prefix% &7Gebruik: &c/ban <player:IP> [-s] <reason>&7."
+    noPlayerGiven: "%prefix% &cU moet een speler mee geven."
+    playerAlreadyBanned: "%prefix% &cDe speler &4%s &cis al verbannen!"
+  tempban:
+    args: "%prefix% &7Gebruik: &c/tempban <player:IP> <time> <timeform> [-s] <reason>&7."
+    noPlayerGiven: "%prefix% &cU moet een speler mee geven."
+    banTimeToLong: "%prefix% &cDe ban time is te lang! Verminder de ban limit! (%s)"
+    tempbanShorterThanLast: "%prefix% &cDeze speler heeft een tempban die langer meegaat dan de door jou opgegeven!"
+  heal:
+    args: "%prefix% &7Gebruik: &c/heal [player]&7."
+    playerHealed: "%prefix% &aU hebt jezelf gehealed!"
+    targetHealed: "%prefix% &aU hebt de speler &2%s &agehealed!"
+
+signs:
+  heal:
+    healed: "%prefix% &aDeze sign heeft u gehealed."
+  onCooldown: "%prefix% &cU zit nog in cooldown! U moet nog &4%s &cseconde(n) wachten."
+
+times:
+  hours: uur
+  minutes: minuut
+  seconds: second
+  weeks: week
+  days: dag
+  years: jaar
+  months: maand

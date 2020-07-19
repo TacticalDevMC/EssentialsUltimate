@@ -136,6 +136,23 @@ public class EssentialsPlayer {
         this.base.setPlayerListName(settings.getAfkListName().replace("{USERNAME}", getBase().getName()).replace("{PLAYER}", getBase().getDisplayName()));
     }
 
+    public void heal(int health) {
+        base.setHealth(health);
+    }
+
+    public void feed(int feed) {
+        base.setFoodLevel(feed);
+    }
+
+    public Double getHealth() {
+        return base.getHealth();
+    }
+
+    public Integer getFood() {
+        return base.getFoodLevel();
+    }
+
+
     public Integer getTotalBans() {
         try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
             String query = "SELECT * FROM " + sqlManager.getTable("players") + " WHERE player_uuid=?";

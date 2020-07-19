@@ -176,6 +176,10 @@ MaxTempbanTime: 604800
 ####################################################################
 # Control if you will be use the EssentialsSigns methods.
 using-essentials-signs: true
+# If you have this set to true the cooldowns are been enabled, If you want to prevent lagg, you must set this option to true.
+use-cooldowns-on-signs: false
+# The cooldown number vor signs
+cooldown-on-sign: 3
 
 # Essentials Sign Control
 # See #soon for instructions on how to use these.
@@ -184,3 +188,4 @@ using-essentials-signs: true
 enabledSigns:
 #  - color
 #  - spawn
+#  - heal

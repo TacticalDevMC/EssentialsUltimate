@@ -12,12 +12,14 @@ import essentialsapi.interfaces.IDatabase;
 import essentialsapi.utils.menu.MenuManager;
 import essentialsapi.utils.menu.item.InventoryCheck;
 import nl.tacticaldev.essentials.listeners.bukkit.custom.DatabasePlayerCreate;
-import nl.tacticaldev.essentials.listeners.bukkit.custom.SpawnSignCreateEvent;
+import nl.tacticaldev.essentials.listeners.bukkit.custom.signs.HealSignCreateEvent;
+import nl.tacticaldev.essentials.listeners.bukkit.custom.signs.SpawnSignCreateEvent;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerBlockBreakListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerConnectBanListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerConnectionListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.PlayerInteractSignListener;
 import nl.tacticaldev.essentials.listeners.bukkit.players.signs.SignChangeListener;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 import org.bukkit.plugin.PluginManager;
 
 public class EssentialsAPI implements IAPI {
@@ -53,10 +55,22 @@ public class EssentialsAPI implements IAPI {
             pm.registerEvents(new SignChangeListener(), ess);
             pm.registerEvents(new PlayerInteractSignListener(), ess);
 
-            if (ess.getSettings().getEnabledSigns().contains("spawn")) {
+            if (checkSign("spawn")) {
                 pm.registerEvents(new SpawnSignCreateEvent(), ess);
             }
+            if (checkSign("heal")) {
+                pm.registerEvents(new HealSignCreateEvent(), ess);
+            }
         }
+    }
+
+    private boolean checkSign(String sign) {
+        ISettings settings = ess.getSettings();
+
+        if (settings.getEnabledSigns().contains(sign)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
