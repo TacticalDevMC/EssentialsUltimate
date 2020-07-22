@@ -52,7 +52,9 @@ MySQL:
   tables:
     players: "essentials_players"
     bans: "essentials_bans"
+    ipbans: "essentials_ipbans"
     history: "essentials_history"
+    iphistory: "essentials_iphistory"
   read-only: false
 
 # OnJoin functions
@@ -158,12 +160,15 @@ default-appeal-message: "none"
 default-reason: "Misconduct"
 
 disconnection:
-  you-are-banned: "&fU bent verbannen!\n Reason: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}"
-  you-are-temp-banned: "&fU bent voor een tijdje verbannen!\nReason: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}"
+  you-are-banned: "&fU bent verbannen!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}"
+  you-are-temp-banned: "&fU bent voor een tijdje verbannen!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}"
+  you-are-ipbanned: "&fU bent IP banned!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}"
+  you-are-temp-ipbanned: "&fU bent tijdelijk IP Banned!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}"
 
 announcement:
   player-was-banned: "&a{banner}&f banned &a{name}&f voor &a'{reason}'&f."
   player-was-tempbanned: "&a{banner}&f tempbanned &a{name}&f voor {time} voor &a'{reason}'&f"
+  player-was-ip-banned: "&a{banner} &fIP banned &a{name} &f('&a{ip}&f') voor &a'{reason}'&f."
 
 history-expirey-minutes: 10080 #1 week.
 #Maximum tempban time, in seconds. 604800 is a week.

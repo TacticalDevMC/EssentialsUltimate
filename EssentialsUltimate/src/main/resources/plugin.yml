@@ -50,7 +50,19 @@ commands:
       - bantemp
       - ebantemp
       - etban
+  ipban:
+    description: "IPBan a player"
+    aliases:
+      - eipban
+      - iban
+      - eiban
   heal:
     description: "Heal a player"
     aliases:
       - eheal
+  language:
+    description: "Lang command"
+    aliases:
+      - lang
+      - elang
+      - elanguage

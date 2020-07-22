@@ -34,7 +34,7 @@ public class TempBanCommand extends CoreCommand {
 
     @Override
     public void execute() throws CoreException {
-        if (getArgs().length <= 6) {
+        if (getArgs().length <= 4) {
             EssentialsMessages.TEMPBAN_ARGS.send(getSender());
             return;
         }
@@ -100,13 +100,13 @@ public class TempBanCommand extends CoreCommand {
 
             EssentialsPlayer base = new EssentialsPlayer(name);
             Essentials.getInstance().getBanManager().tempban(name, reason, banner, expires);
-            base.updateBanned(true);
+            base.updateTotalBans(+1);
         } else {
             // TODO: Add ipTempBan
         }
 
         ISettings settings = Essentials.getInstance().getSettings();
-        final String message = settings.getPlayerTempBannedAnnouncement().replace("{banner}", banner).replace("{name}", name).replace("{reason}", reason).replace("{time}", DateUtil.getTimeUntil(expires));
+        final String message = settings.getPlayerTempBannedAnnouncement().replace("{banner}", banner).replace("{name}", name).replace("{reason}", reason).replace("{time}", DateUtil.getTimeUntil(expires).replace("{appeal-message}", Essentials.getInstance().getBanManager().getAppealMessage()));
 
         Essentials.getInstance().getBanManager().announce(message, silent, getSender());
         Essentials.getInstance().getBanManager().addHistory(name, banner, message);

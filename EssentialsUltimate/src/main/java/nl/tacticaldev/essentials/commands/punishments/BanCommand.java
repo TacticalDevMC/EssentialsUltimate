@@ -9,6 +9,8 @@ import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.commands.CoreCommand;
 import nl.tacticaldev.essentials.managers.messages.enums.EssentialsMessages;
 import nl.tacticaldev.essentials.managers.punishments.ban.Ban;
+import nl.tacticaldev.essentials.managers.punishments.ban.ipban.IPBan;
+import nl.tacticaldev.essentials.managers.punishments.ban.ipban.TempIPBan;
 import nl.tacticaldev.essentials.managers.punishments.ban.tempban.TempBan;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
 import nl.tacticaldev.essentials.settings.interfaces.ISettings;
@@ -64,9 +66,14 @@ public class BanCommand extends CoreCommand {
             }
 
             Essentials.getInstance().getBanManager().ban(name, reason, banner);
-            base.updateBanned(true);
+            base.updateTotalBans(+1);
         } else {
-            // TODO: Add ipBan
+            final IPBan ipban = Essentials.getInstance().getBanManager().getIPBan(name);
+            if (ipban != null && !(ipban instanceof TempIPBan)) {
+                EssentialsMessages.IPBAN_IP_ALREADY_BANNED.send(getSender(), name);
+                return;
+            }
+            Essentials.getInstance().getBanManager().ipban(name, reason, banner);
         }
         Essentials.getInstance().getBanManager().announce(message, silent, getSender());
         Essentials.getInstance().getBanManager().addHistory(name, banner, message);

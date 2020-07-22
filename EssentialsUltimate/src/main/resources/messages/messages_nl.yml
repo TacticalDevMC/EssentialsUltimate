@@ -37,6 +37,10 @@ commands:
     noPlayerGiven: "%prefix% &cU moet een speler mee geven."
     banTimeToLong: "%prefix% &cDe ban time is te lang! Verminder de ban limit! (%s)"
     tempbanShorterThanLast: "%prefix% &cDeze speler heeft een tempban die langer meegaat dan de door jou opgegeven!"
+  ipban:
+    args: "%prefix% &7Gebruik: &c/ipban <player|IP> [-s] <reason>&7."
+    noIPRecordFound: "%prefix% &cGeen IP record voor &4&l%s &c- Probeer ze in plaats daarvan normaal te verbannen?"
+    ipAlreadyBanned: "%prefix% &cHet ip &4&l%s &cis al verbannen."
   heal:
     args: "%prefix% &7Gebruik: &c/heal [player]&7."
     playerHealed: "%prefix% &aU hebt jezelf gehealed!"
@@ -46,6 +50,10 @@ signs:
   heal:
     healed: "%prefix% &aDeze sign heeft u gehealed."
   onCooldown: "%prefix% &cU zit nog in cooldown! U moet nog &4%s &cseconde(n) wachten."
+
+menus:
+  lang:
+    langSelected: "%prefix% &aU hebt succesvol de language &2&l%s &ageselecteerd!"
 
 times:
   hours: uur

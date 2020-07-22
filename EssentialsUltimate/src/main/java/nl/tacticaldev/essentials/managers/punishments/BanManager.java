@@ -8,14 +8,20 @@ import essentialsapi.utils.logger.Logger;
 import nl.tacticaldev.essentials.database.sql.SQLManager;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
 import nl.tacticaldev.essentials.managers.punishments.ban.Ban;
+import nl.tacticaldev.essentials.managers.punishments.ban.ipban.IPBan;
+import nl.tacticaldev.essentials.managers.punishments.ban.ipban.TempIPBan;
 import nl.tacticaldev.essentials.managers.punishments.ban.tempban.TempBan;
 import nl.tacticaldev.essentials.managers.punishments.history.HistoryRecord;
+import nl.tacticaldev.essentials.player.EssentialsOfflinePlayer;
+import nl.tacticaldev.essentials.player.EssentialsPlayer;
+import nl.tacticaldev.essentials.player.EssentialsPlayerIP;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.net.InetAddress;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -27,8 +33,11 @@ public class BanManager {
     protected IEssentials ess;
     private HashMap<String, Ban> bans;
     private HashMap<String, TempBan> tempBans;
+    private HashMap<String, IPBan> ipBans;
+    private HashMap<String, TempIPBan> tempipbans;
     private ArrayList<HistoryRecord> history;
     private HashMap<String, ArrayList<HistoryRecord>> personalHistory;
+    private HashMap<String, String> recentips;
     private HashMap<String, HashSet<String>> iplookup;
     private TrieSet players;
     private HashMap<String, String> actualNames;
@@ -45,9 +54,12 @@ public class BanManager {
 
         this.bans = new HashMap<>();
         this.tempBans = new HashMap<>();
+        this.ipBans = new HashMap<>();
+        this.tempipbans = new HashMap<>();
 
         this.history = new ArrayList<>();
         this.personalHistory = new HashMap<>();
+        this.recentips = new HashMap<>();
         this.iplookup = new HashMap<>();
         this.players = new TrieSet();
         this.actualNames = new HashMap<>();
@@ -70,6 +82,14 @@ public class BanManager {
 
     public HashMap<String, TempBan> getTempBans() {
         return tempBans;
+    }
+
+    public HashMap<String, IPBan> getIpBans() {
+        return ipBans;
+    }
+
+    public HashMap<String, TempIPBan> getTempipbans() {
+        return tempipbans;
     }
 
     public HashMap<String, String> getPlayers() {
@@ -110,6 +130,9 @@ public class BanManager {
     public void reload() {
         this.bans.clear();
         this.tempBans.clear();
+        this.ipBans.clear();
+        this.tempipbans.clear();
+        this.iplookup.clear();
         this.players.clear();
         this.actualNames.clear();
         this.setAppealMessage(ess.getSettings().getDefaultAppealMessage());
@@ -141,6 +164,25 @@ public class BanManager {
                     final Ban ban = new Ban(name, reason, banner, time);
                     this.bans.put(name.toLowerCase(), ban);
                 }
+            }
+        } catch (Exception e) {
+            Logger.ERROR.log(e);
+        }
+        try {
+            Logger.INFO.log("Loading IP history");
+            query = "SELECT * FROM " + sqlManager.getTable("iphistory") + " ";
+            ps = this.ess.getAPI().getDatabase().getConnection().prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                final String name = rs.getString("name").toLowerCase();
+                final String ip = rs.getString("ip");
+                this.recentips.put(name, ip);
+                HashSet<String> list = this.iplookup.get(ip);
+                if (list == null) {
+                    list = new HashSet<String>(2);
+                    this.iplookup.put(ip, list);
+                }
+                list.add(name);
             }
         } catch (Exception e) {
             Logger.ERROR.log(e);
@@ -225,6 +267,10 @@ public class BanManager {
         this.bans.put(name, ban);
         this.ess.getAPI().getDatabase().execute("INSERT INTO " + sqlManager.getTable("bans") + " (name, reason, banner, time) VALUES (?, ?, ?, ?)", name, reason, banner, System.currentTimeMillis());
         this.kick(name, Utils.replaceColor(ban.getKickMessage()));
+
+        EssentialsOfflinePlayer base = new EssentialsOfflinePlayer(name);
+
+        base.updateBanned(true);
     }
 
     public void tempban(String name, final String reason, String banner, final long expires) {
@@ -236,6 +282,60 @@ public class BanManager {
         this.tempBans.put(name, ban);
         this.ess.getAPI().getDatabase().execute("INSERT INTO " + sqlManager.getTable("bans") + " (name, reason, banner, time, expires) VALUES (?, ?, ?, ?, ?)", name, reason, banner, System.currentTimeMillis(), expires);
         this.kick(name, ban.getKickMessage());
+
+        EssentialsOfflinePlayer base = new EssentialsOfflinePlayer(name);
+
+        base.updateBanned(true);
+    }
+
+    public void ipban(final String ip, final String reason, String banner) {
+        banner = banner.toLowerCase();
+        this.unbanip(ip);
+        final IPBan ipBan = new IPBan(ip, reason, banner, System.currentTimeMillis());
+        this.ipBans.put(ip, ipBan);
+        this.ess.getAPI().getDatabase().execute("INSERT INTO " + sqlManager.getTable("ipbans") + " (ip, reason, banner, time) VALUES (?, ?, ?, ?)", ip, reason, banner, System.currentTimeMillis());
+        this.kickIP(ip, ipBan.getKickMessage());
+
+        EssentialsPlayerIP base = new EssentialsPlayerIP(ip);
+
+        base.updateBanned(ip, true);
+    }
+
+    public void tempipban(final String ip, final String reason, String banner, final long expires) {
+        banner = banner.toLowerCase();
+        this.unbanip(ip);
+        final TempIPBan tib = new TempIPBan(ip, reason, banner, System.currentTimeMillis(), expires);
+        this.tempipbans.put(ip, tib);
+        this.ess.getAPI().getDatabase().execute("INSERT INTO " + sqlManager.getTable("ipbans") + " (ip, reason, banner, time, expires) VALUES (?, ?, ?, ?, ?)", ip, reason, banner, System.currentTimeMillis(), expires);
+        this.kickIP(ip, tib.getKickMessage());
+
+        EssentialsPlayerIP base = new EssentialsPlayerIP(ip);
+
+        base.updateBanned(ip, true);
+    }
+
+    public IPBan getIPBan(final String ip) {
+        final IPBan ipBan = this.ipBans.get(ip);
+        if (ipBan != null) {
+            return ipBan;
+        }
+        final TempIPBan tempIPBan = this.tempipbans.get(ip);
+        if (tempIPBan != null) {
+            if (!tempIPBan.hasExpired()) {
+                return tempIPBan;
+            }
+            this.tempipbans.remove(ip);
+            this.ess.getAPI().getDatabase().execute("DELETE FROM " + sqlManager.getTable("ipbans") + " WHERE name=? AND expires <> 0", ip);
+        }
+        return null;
+    }
+
+    public IPBan getIPBan(final InetAddress addr) {
+        return this.getIPBan(addr.getHostAddress());
+    }
+
+    public HashMap<String, String> getIPHistory() {
+        return this.recentips;
     }
 
     public void unban(String name) {
@@ -252,6 +352,27 @@ public class BanManager {
                 this.ess.getAPI().getDatabase().execute("DELETE FROM " + sqlManager.getTable("bans") + " WHERE name = ?", name);
             }
         }
+
+        EssentialsOfflinePlayer base = new EssentialsOfflinePlayer(name);
+
+        base.updateBanned(false);
+    }
+
+    public void unbanip(final String ip) {
+        final IPBan ipBan = this.ipBans.get(ip);
+        final TempIPBan tipban = this.tempipbans.get(ip);
+        if (ipBan != null) {
+            this.ipBans.remove(ip);
+            this.ess.getAPI().getDatabase().execute("DELETE FROM " + sqlManager.getTable("ipbans") + " WHERE ip=?", ip);
+        }
+        if (tipban == null) {
+            this.tempipbans.remove(ip);
+            this.ess.getAPI().getDatabase().execute("DELETE FROM " + sqlManager.getTable("ipbans") + " WHERE ip=?", ip);
+        }
+
+        EssentialsPlayerIP base = new EssentialsPlayerIP(ip);
+
+        base.updateBanned(ip, false);
     }
 
     public void kick(final String user, final String msg) {
@@ -275,16 +396,49 @@ public class BanManager {
         }
     }
 
+    public void kickIP(final String ip, final String msg) {
+        final Runnable r = new Runnable() {
+            public void run() {
+                for (final Player p : Bukkit.getOnlinePlayers()) {
+//                    if (!BanManager.this.hasImmunity(p.getName())) {
+//                        final String pip = BanManager.this.getIP(p.getName());
+//                        if (!ip.equals(pip)) {
+//                            continue;
+//                        }
+//                        p.kickPlayer(msg);
+//                    }
+                    final String pip = BanManager.this.getIP(p.getName());
+                    if (!ip.equals(pip)) {
+                        continue;
+                    }
+                    p.kickPlayer(msg);
+                }
+            }
+        };
+        if (Bukkit.isPrimaryThread()) {
+            r.run();
+        } else {
+            Bukkit.getScheduler().runTask((Plugin) ess, r);
+        }
+    }
+
+    public String getIP(final String user) {
+        if (user == null) {
+            return null;
+        }
+        return this.recentips.get(user.toLowerCase());
+    }
+
     public String match(final String partial) {
         return this.match(partial, false);
     }
 
     public String match(String partial, final boolean excludeOnline) {
         partial = partial.toLowerCase();
-//        final String ip = this.recentips.get(partial);
-//        if (ip != null) {
-//            return partial;
-//        }
+        final String ip = this.recentips.get(partial);
+        if (ip != null) {
+            return partial;
+        }
         if (!excludeOnline) {
             final Player p = Bukkit.getPlayer(partial);
             if (p != null) {
@@ -305,6 +459,33 @@ public class BanManager {
 
     public String convertName(final String lowercase) {
         return this.actualNames.get(lowercase.toLowerCase());
+    }
+
+    public boolean logIP(String name, final String ip) {
+        name = name.toLowerCase();
+        final String oldIP = this.recentips.get(name);
+        if (oldIP != null && ip.equals(oldIP)) {
+            return false;
+        }
+        final boolean isNew = this.recentips.put(name, ip) == null;
+        if (!isNew) {
+            final HashSet<String> usersFromOldIP = this.iplookup.get(oldIP);
+            usersFromOldIP.remove(name);
+        } else {
+            this.players.add(name);
+        }
+        HashSet<String> usersFromNewIP = this.iplookup.get(ip);
+        if (usersFromNewIP == null) {
+            usersFromNewIP = new HashSet<String>();
+            this.iplookup.put(ip, usersFromNewIP);
+        }
+        usersFromNewIP.add(name);
+        if (!isNew) {
+            this.ess.getAPI().getDatabase().execute("UPDATE " + sqlManager.getTable("iphistory") + " SET ip = ? WHERE name = ?", ip, name);
+        } else {
+            this.ess.getAPI().getDatabase().execute("INSERT INTO " + sqlManager.getTable("iphistory") + " (name, ip) VALUES (?, ?)", name, ip);
+        }
+        return true;
     }
 
     public void announce(final String s) {

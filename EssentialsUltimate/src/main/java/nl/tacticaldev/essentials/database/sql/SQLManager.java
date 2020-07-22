@@ -32,8 +32,12 @@ public class SQLManager {
                 return section.getString("players");
             case "bans":
                 return section.getString("bans");
+            case "ipbans":
+                return section.getString("ipbans");
             case "history":
                 return section.getString("history");
+            case "iphistory":
+                return section.getString("iphistory");
             default:
                 break;
         }
@@ -92,6 +96,24 @@ public class SQLManager {
         }
     }
 
+    public void createTableIPBans() {
+        try (Connection connection = database.getConnection()) {
+            String query = "CREATE TABLE IF NOT EXISTS " + getTable("ipbans") + " " +
+                    "(ip TEXT(30) NOT NULL, " +
+                    "reason TEXT(100), " +
+                    "banner TEXT(30), " +
+                    "time BIGINT NOT NULL DEFAULT 0, " +
+                    "expires BIGINT NOT NULL DEFAULT 0)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.execute();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+    }
+
     public void createTableHistory() {
         try (Connection connection = database.getConnection()) {
             String query = "CREATE TABLE IF NOT EXISTS " + getTable("history") + " " +
@@ -99,6 +121,21 @@ public class SQLManager {
                     "message TEXT(100), " +
                     "banner TEXT(30), " +
                     "name TEXT(30))";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.execute();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+    }
+
+    public void createTableIPHistory() {
+        try (Connection connection = database.getConnection()) {
+            String query = "CREATE TABLE IF NOT EXISTS " + getTable("iphistory") + " " +
+                    "(name TEXT(30) NOT NULL, " +
+                    "ip TEXT(20) NOT NULL)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.execute();

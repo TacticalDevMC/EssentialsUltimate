@@ -22,7 +22,7 @@ public class PlayerConnectBanListener implements Listener {
 
         final Ban ban = Essentials.getInstance().getBanManager().getBan(base.getBase().getName());
 
-        if (ban != null || base.isBanned()) {
+        if (ban != null && base.isBanned()) {
             Essentials.getInstance().getBanManager().kick(base.getBase().getName(), replaceColor(ban.getKickMessage()));
         }
     }

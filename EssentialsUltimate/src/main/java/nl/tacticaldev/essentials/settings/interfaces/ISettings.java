@@ -18,6 +18,8 @@ public interface ISettings extends IConf {
 
     String getLanguage();
 
+    void setLanguage(String language);
+
     String getPrefix();
 
     String getNoPermissions();
@@ -65,6 +67,12 @@ public interface ISettings extends IConf {
     Integer getMaxTempbanTime();
 
     String getPlayerTempBannedAnnouncement();
+
+    String getIPBanKickMessage();
+
+    String getTempIPBanKickMessage();
+
+    String getPlayerIpBannedAnnouncement();
 
     boolean isUsingEssentialsSigns();
 

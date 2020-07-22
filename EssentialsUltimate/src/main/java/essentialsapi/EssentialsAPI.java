@@ -81,6 +81,7 @@ public class EssentialsAPI implements IAPI {
         commandModule.loadTeleportCommands();
         commandModule.loadDefaultCommands();
         commandModule.loadPunishmentsCommands();
+        commandModule.loadMainCommands();
     }
 
     @Override
@@ -89,6 +90,8 @@ public class EssentialsAPI implements IAPI {
 
         sqlManager.createTablePlayers();
         sqlManager.createTableBans();
+        sqlManager.createTableIPBans();
         sqlManager.createTableHistory();
+        sqlManager.createTableIPHistory();
     }
 }
