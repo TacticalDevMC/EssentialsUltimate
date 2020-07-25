@@ -19,7 +19,6 @@ public class Ban extends Punishment {
         ISettings settings = Essentials.getInstance().getSettings();
         BanManager banManager = Essentials.getInstance().getBanManager();
 
-        return settings.getBannedKickMessage().replace("{reason}", this.reason).replace("{banner}", this.banner).replace("{appeal-message}", banManager.getAppealMessage().equals("none") ? ChatColor.RED + "Geen appeal message ingesteld" : banManager.getAppealMessage());
+        return settings.getBannedKickMessage().replace("{reason}", this.reason).replace("{banner}", this.banner).replace("{appeal-message}", banManager.getAppealMessage());
     }
-
 }

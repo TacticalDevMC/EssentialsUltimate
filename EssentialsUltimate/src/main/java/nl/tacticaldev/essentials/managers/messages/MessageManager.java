@@ -6,6 +6,7 @@ package nl.tacticaldev.essentials.managers.messages;
 import essentialsapi.config.EssentialsConfig;
 import nl.tacticaldev.essentials.interfaces.IConf;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
+import nl.tacticaldev.essentials.settings.interfaces.ISettings;
 
 public class MessageManager implements IConf {
 
@@ -36,6 +37,15 @@ public class MessageManager implements IConf {
     public void reloadConfig() {
         configNL.reload();
         configEN.reload();
+    }
+
+    public String get(String path) {
+        if (ess.getSettings().getLanguage().equals("NL")) {
+            return configNL.getConfiguration().getString(path);
+        } else if (ess.getSettings().getLanguage().equals("EN")) {
+            return configEN.getConfiguration().getString(path);
+        }
+        return "No language found!";
     }
 
     @Override

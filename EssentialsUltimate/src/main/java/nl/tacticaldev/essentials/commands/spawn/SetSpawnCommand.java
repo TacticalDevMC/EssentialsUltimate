@@ -31,18 +31,17 @@ public class SetSpawnCommand extends CoreCommand {
     @Override
     public void execute() throws CoreException {
         if (getArgs().length == 0) {
-            EssentialsMessages.SETSPAWN_ARGS.send(getPlayer());
+            user.sendMessage(EssentialsMessages.SETSPAWN_ARGS);
             return;
         }
 
         EssentialsPlayer base = new EssentialsPlayer(getPlayer());
-        IEssentials ess = Essentials.getInstance();
         Spawns spawns = ess.getSpawns();
 
         String name = getArgs()[0];
 
         if (spawns.getSpawn(name) != null) {
-            EssentialsMessages.SETSPAWN_SPAWN_ALREADY_EXISTS.send(getPlayer(), name);
+            user.sendMessage(EssentialsMessages.SETSPAWN_SPAWN_ALREADY_EXISTS, name);
             return;
         }
 
@@ -54,7 +53,7 @@ public class SetSpawnCommand extends CoreCommand {
         float pitch = base.getPitch();
 
         spawns.addSpawn(name, world, x, y, z, yaw, pitch);
-        EssentialsMessages.SETSPAWN_SPAWNSET.send(getPlayer(), name);
+        user.sendMessage(EssentialsMessages.SETSPAWN_SPAWNSET, name);
     }
 
     @Override

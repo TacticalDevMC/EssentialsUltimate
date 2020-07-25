@@ -3,10 +3,16 @@ package nl.tacticaldev.essentials;
 // Do not copy this plugin, and use it in you're own plugins.
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
 
+import essentialsapi.utils.essentialsutils.VersionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import nl.tacticaldev.essentials.interfaces.IConf;
+import nl.tacticaldev.essentials.managers.powertool.PowerTool;
+import nl.tacticaldev.essentials.managers.powertool.interfaces.IPowerTool;
 import nl.tacticaldev.essentials.managers.punishments.BanManager;
+import nl.tacticaldev.essentials.managers.warp.Warps;
+import nl.tacticaldev.essentials.managers.warp.interfaces.IWarps;
+import nl.tacticaldev.essentials.metrics.MetricsWrapper;
 import nl.tacticaldev.essentials.settings.interfaces.IDatabaseSettings;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
 import nl.tacticaldev.essentials.settings.interfaces.ISettings;
@@ -24,7 +30,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class Essentials extends JavaPlugin implements IEssentials {
 
@@ -35,11 +40,13 @@ public class Essentials extends JavaPlugin implements IEssentials {
     private static IDatabaseSettings databaseSettings;
     private static IPermissionsHandler permissionsHandler;
     private static Spawns spawns;
+    private static IWarps warps;
+    private static IPowerTool powerTool;
 
     private static MessageManager messageManager;
     private static BanManager banManager;
 
-    private static Metrics metrics;
+    private static MetricsWrapper metrics;
     private EssentialsAPI api;
     private List<IConf> confList = new ArrayList<IConf>();
 
@@ -50,62 +57,62 @@ public class Essentials extends JavaPlugin implements IEssentials {
         instance = this;
         this.start = System.currentTimeMillis();
 
-        api = new EssentialsAPI(this);
-        Logger.INFO.log("Plugin starting! V-" + this.getDescription().getVersion() + " Author(s): " + this.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+        if (!VersionUtil.isServerSupported()) {
+            getLogger().severe("You are running an unsupported server version!");
+        }
 
-        settings = new Settings(this);
-        databaseSettings = new DatabaseSettings(this);
-        confList.add(settings);
+        try {
+            api = new EssentialsAPI(this);
+            Logger.INFO.log("Plugin starting! V-" + this.getDescription().getVersion() + " Author(s): " + this.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+
+            settings = new Settings(this);
+            databaseSettings = new DatabaseSettings(this);
+            confList.add(settings);
 
 //        permissionsHandler = new PermissionsHandler(this);
 //        confList.add(permissionsHandler);
 
-        messageManager = new MessageManager(this);
-        confList.add(messageManager);
+            messageManager = new MessageManager(this);
+            confList.add(messageManager);
 
-        spawns = new Spawns(this);
-        confList.add(spawns);
+            spawns = new Spawns(this);
+            confList.add(spawns);
 
+//            warps = new Warps(getServer(), this.getDataFolder());
+//            confList.add(warps);
 
-        Logger.INFO.log("----------------------");
-        api.getDatabase().tryToStart();
-        if (api.getDatabase().isLoaded()) {
-            api.getDatabase().start();
-            api.createTables();
-            Logger.INFO.log("Database loaded!");
-        }
+            powerTool = new PowerTool(this);
+            confList.add(powerTool);
 
-        banManager = new BanManager(this);
-
-        api.loadListeners(this);
-        Logger.INFO.log("Listeners loaded!");
-
-        api.loadCommands();
-        Logger.INFO.log("Commands loaded!");
-        Logger.INFO.log("----------------------");
-
-        metrics = new Metrics(this, 7955);
-
-        if (metrics.isEnabled()) {
-            getLogger().info("Starting Metrics. Opt-out using the global bStats config.");
-        } else {
-            getLogger().info("Metrics disabled per bStats config.");
-        }
-
-        metrics.addCustomChart(new Metrics.SimplePie("used_language", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return settings.getLanguage();
+            Logger.INFO.log("----------------------");
+            api.getDatabase().tryToStart();
+            if (api.getDatabase().isLoaded()) {
+                api.getDatabase().start();
+                api.createTables();
+                Logger.INFO.log("Database loaded!");
             }
-        }));
 
-        for (IConf iConf : confList) {
-            iConf.reloadConfig();
-            Logger.CONFIG.log("Config " + iConf.getName() + " reloaded!");
+            banManager = new BanManager(this);
+
+            api.loadListeners(this);
+            Logger.INFO.log("Listeners loaded!");
+
+            api.loadCommands();
+            Logger.INFO.log("Commands loaded!");
+            Logger.INFO.log("----------------------");
+
+            metrics = new MetricsWrapper(this, 7955, true);
+
+            this.end = System.currentTimeMillis();
+            Logger.INFO.log("Plugin started! Took(" + (start - end) + "ms) ♥");
+        } catch (Exception ex) {
+            try {
+                throw new PluginLoadErrorException("Plugin cannot be loading, there was found an error.");
+            } catch (PluginLoadErrorException e) {
+                Logger.ERROR.log(e);
+                e.printStackTrace();
+            }
         }
-
-        this.end = System.currentTimeMillis();
-        Logger.INFO.log("Plugin started! Took(" + (start - end) + "ms) ♥");
     }
 
     @Override
@@ -159,6 +166,16 @@ public class Essentials extends JavaPlugin implements IEssentials {
     }
 
     @Override
+    public IWarps getWarps() {
+        return warps;
+    }
+
+    @Override
+    public IPowerTool getPowerTool() {
+        return powerTool;
+    }
+
+    @Override
     public MessageManager getMessageManager() {
         return messageManager;
     }
@@ -169,7 +186,7 @@ public class Essentials extends JavaPlugin implements IEssentials {
     }
 
     @Override
-    public Metrics getMetrics() {
+    public MetricsWrapper getMetrics() {
         return metrics;
     }
 

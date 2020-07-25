@@ -35,7 +35,7 @@ public class TempBanCommand extends CoreCommand {
     @Override
     public void execute() throws CoreException {
         if (getArgs().length <= 4) {
-            EssentialsMessages.TEMPBAN_ARGS.send(getSender());
+            user.sendMessage(EssentialsMessages.TEMPBAN_ARGS);
             return;
         }
 
@@ -43,20 +43,20 @@ public class TempBanCommand extends CoreCommand {
         String name = getArgs()[0];
 
         if (name.isEmpty()) {
-            EssentialsMessages.TEMPBAN_NO_PLAYER_GIVEN.send(getSender());
+            user.sendMessage(EssentialsMessages.TEMPBAN_NO_PLAYER_GIVEN);
             return;
         }
 
         long expires = DateUtil.getTime(getArgs());
         if (expires <= 0L) {
-            EssentialsMessages.TEMPBAN_ARGS.send(getSender());
+            user.sendMessage(EssentialsMessages.TEMPBAN_ARGS);
             return;
         }
 
         expires += System.currentTimeMillis();
         long tempbanTime;
         try {
-            tempbanTime = Essentials.getInstance().getSettings().getMaxTempbanTime();
+            tempbanTime = settings.getMaxTempbanTime();
         } catch (Exception e) {
             tempbanTime = 604800L;
         }
@@ -67,49 +67,47 @@ public class TempBanCommand extends CoreCommand {
         tempbanTime += System.currentTimeMillis();
 
         if (compare != 0 && expires > tempbanTime) {
-            EssentialsMessages.TEMPBAN_BAN_TIME_TO_LONG.send(getSender(), DateUtil.getTimeUntil(tempbanTime));
+            user.sendMessage(EssentialsMessages.TEMPBAN_BAN_TIME_TO_LONG, DateUtil.getTimeUntil(tempbanTime));
             expires = tempbanTime;
         }
 
         final String reason = Utils.buildReason(getArgs());
         final String banner = Utils.getName(getSender());
         if (!Utils.isIP(name)) {
-            name = Essentials.getInstance().getBanManager().match(name);
+            name = ess.getBanManager().match(name);
             if (name == null) {
                 name = getArgs()[0];
             }
 
-            final Ban ban = Essentials.getInstance().getBanManager().getBan(name);
+            final Ban ban = ess.getBanManager().getBan(name);
             if (ban != null) {
                 if (!(ban instanceof TempBan)) {
-                    EssentialsMessages.TEMPBAN_TEMPBAN_SHORTER_THAN_LAST.send(getSender());
+                    user.sendMessage(EssentialsMessages.TEMPBAN_TEMPBAN_SHORTER_THAN_LAST);
                     return;
                 }
 
                 final TempBan tBan = (TempBan) ban;
 
                 if (tBan.getExpires() > expires) {
-                    EssentialsMessages.TEMPBAN_TEMPBAN_SHORTER_THAN_LAST.send(getSender());
+                    user.sendMessage(EssentialsMessages.TEMPBAN_TEMPBAN_SHORTER_THAN_LAST);
                     return;
                 }
 
-                Essentials.getInstance().getBanManager().unban(name);
-                EssentialsPlayer base = new EssentialsPlayer(name);
-                base.updateBanned(false);
+                ess.getBanManager().unban(name);
             }
 
             EssentialsPlayer base = new EssentialsPlayer(name);
-            Essentials.getInstance().getBanManager().tempban(name, reason, banner, expires);
             base.updateTotalBans(+1);
+
+            ess.getBanManager().tempban(name, reason, banner, expires);
         } else {
             // TODO: Add ipTempBan
         }
 
-        ISettings settings = Essentials.getInstance().getSettings();
         final String message = settings.getPlayerTempBannedAnnouncement().replace("{banner}", banner).replace("{name}", name).replace("{reason}", reason).replace("{time}", DateUtil.getTimeUntil(expires).replace("{appeal-message}", Essentials.getInstance().getBanManager().getAppealMessage()));
 
-        Essentials.getInstance().getBanManager().announce(message, silent, getSender());
-        Essentials.getInstance().getBanManager().addHistory(name, banner, message);
+        ess.getBanManager().announce(message, silent, getSender());
+        ess.getBanManager().addHistory(name, banner, message);
     }
 
     @Override

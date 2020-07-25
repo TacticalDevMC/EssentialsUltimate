@@ -36,47 +36,46 @@ public class BanCommand extends CoreCommand {
     @Override
     public void execute() throws CoreException {
         if (getArgs().length <= 2) {
-            EssentialsMessages.BAN_ARGS.send(getSender());
+            user.sendMessage(EssentialsMessages.BAN_ARGS);
             return;
         }
-
-        ISettings settings = Essentials.getInstance().getSettings();
 
         final boolean silent = Utils.isSilent(getArgs());
         String name = getArgs()[0];
 
         if (name.isEmpty()) {
-            EssentialsMessages.BAN_NO_PLAYER_GIVEN.send(getSender());
+            user.sendMessage(EssentialsMessages.BAN_NO_PLAYER_GIVEN);
             return;
         }
+
         final String reason = Utils.buildReason(getArgs());
         final String banner = Utils.getName(getSender());
         final String message = settings.getPlayerBannedAnnouncement().replace("{banner}", banner).replace("{name}", name).replace("{reason}", reason);
         if (!(Utils.isIP(name))) {
-            name = Essentials.getInstance().getBanManager().match(name);
+            name = ess.getBanManager().match(name);
             if (name == null) {
                 name = getArgs()[0];
             }
-            final Ban ban = Essentials.getInstance().getBanManager().getBan(name);
+            final Ban ban = ess.getBanManager().getBan(name);
             EssentialsPlayer base = new EssentialsPlayer(name);
 
             if (ban != null && !(ban instanceof TempBan) && base.isBanned()) {
-                EssentialsMessages.BAN_PLAYER_ALREADY_BANNED.send(getSender(), base.getBase().getName());
+                user.sendMessage(EssentialsMessages.BAN_PLAYER_ALREADY_BANNED, base.getBase().getName());
                 return;
             }
 
-            Essentials.getInstance().getBanManager().ban(name, reason, banner);
+            ess.getBanManager().ban(name, reason, banner);
             base.updateTotalBans(+1);
         } else {
             final IPBan ipban = Essentials.getInstance().getBanManager().getIPBan(name);
             if (ipban != null && !(ipban instanceof TempIPBan)) {
-                EssentialsMessages.IPBAN_IP_ALREADY_BANNED.send(getSender(), name);
+                user.sendMessage(EssentialsMessages.IPBAN_IP_ALREADY_BANNED, name);
                 return;
             }
-            Essentials.getInstance().getBanManager().ipban(name, reason, banner);
+            ess.getBanManager().ipban(name, reason, banner);
         }
-        Essentials.getInstance().getBanManager().announce(message, silent, getSender());
-        Essentials.getInstance().getBanManager().addHistory(name, banner, message);
+        ess.getBanManager().announce(message, silent, getSender());
+        ess.getBanManager().addHistory(name, banner, message);
     }
 
     @Override

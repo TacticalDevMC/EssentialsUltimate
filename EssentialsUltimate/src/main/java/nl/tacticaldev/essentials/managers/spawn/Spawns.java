@@ -9,6 +9,7 @@ import essentialsapi.utils.logger.Logger;
 import nl.tacticaldev.essentials.database.sql.SQLManager;
 import nl.tacticaldev.essentials.interfaces.IConf;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
+import nl.tacticaldev.essentials.managers.spawn.exception.SpawnNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -108,7 +109,7 @@ public class Spawns implements IConf {
         return null;
     }
 
-    public Location getSpawnLocation(String name) {
+    public Location getSpawnLocation(String name) throws SpawnNotFoundException {
         String world = null;
         int x = 0, y = 0, z = 0;
         float yaw = 0, pitch = 0;

@@ -6,9 +6,12 @@ package nl.tacticaldev.essentials.managers.punishments.ban.tempban;
 import essentialsapi.utils.Utils;
 import essentialsapi.utils.essentialsutils.DateUtil;
 import nl.tacticaldev.essentials.Essentials;
+import nl.tacticaldev.essentials.managers.punishments.BanManager;
 import nl.tacticaldev.essentials.managers.punishments.ban.Ban;
 import nl.tacticaldev.essentials.managers.punishments.punishment.Temporary;
 import nl.tacticaldev.essentials.settings.interfaces.ISettings;
+
+import static essentialsapi.utils.Utils.replaceColor;
 
 public class TempBan extends Ban implements Temporary {
 
@@ -32,7 +35,8 @@ public class TempBan extends Ban implements Temporary {
     @Override
     public String getKickMessage() {
         ISettings settings = Essentials.getInstance().getSettings();
+        BanManager banManager = Essentials.getInstance().getBanManager();
 
-        return settings.getTempBanKickMessage().replace("{reason}", this.getReason()).replace("{banner}", this.getBanner()).replace("{time}", DateUtil.getTimeUntil(this.expires).replace("{appeal-message}", Essentials.getInstance().getBanManager().getAppealMessage()));
+        return replaceColor(settings.getTempBanKickMessage().replace("{reason}", this.getReason()).replace("{banner}", this.getBanner()).replace("{time}", DateUtil.getTimeUntil(this.expires).replace("{appeal-message}", banManager.getAppealMessage())));
     }
 }

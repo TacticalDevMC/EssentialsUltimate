@@ -24,18 +24,18 @@ public class DeleteSpawnCommand extends CoreCommand {
     @Override
     public void execute() throws CoreException {
         if (getArgs().length == 0) {
-            EssentialsMessages.DELETESPAWN_ARGS.send(getPlayer());
+            user.sendMessage(EssentialsMessages.DELETESPAWN_ARGS);
             return;
         }
 
-        Spawns spawns = Essentials.getInstance().getSpawns();
+        Spawns spawns = ess.getSpawns();
 
         if (spawns.getSpawn(getArgs()[0]) == null) {
-            EssentialsMessages.DELETESPAWN_SPAWN_NOT_FOUND.send(getPlayer(), getArgs()[0]);
+            user.sendMessage(EssentialsMessages.DELETESPAWN_SPAWN_NOT_FOUND, getArgs()[0]);
             return;
         }
 
         spawns.removeSpawn(getArgs()[0]);
-        EssentialsMessages.DELETESPAWN_SPAWN_DELETED.send(getPlayer(), getArgs()[0]);
+        user.sendMessage(EssentialsMessages.DELETESPAWN_SPAWN_DELETED, getArgs()[0]);
     }
 }

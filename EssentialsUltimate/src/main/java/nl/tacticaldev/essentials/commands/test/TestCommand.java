@@ -7,9 +7,9 @@ import essentialsapi.utils.exception.CoreException;
 import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.commands.CoreCommand;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
+import nl.tacticaldev.essentials.managers.spawn.exception.SpawnNotFoundException;
 import nl.tacticaldev.essentials.perm.impl.IPermissionsHandler;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
-import org.bukkit.ChatColor;
 
 public class TestCommand extends CoreCommand {
 
@@ -37,7 +37,11 @@ public class TestCommand extends CoreCommand {
                 player.sendMessage("Spawn named " + getArgs()[1] + " created!");
                 break;
             case "get":
-                player.sendMessage(ess.getSpawns().getSpawnLocation(getArgs()[1]));
+                try {
+                    player.sendMessage(ess.getSpawns().getSpawnLocation(getArgs()[1]));
+                } catch (SpawnNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;

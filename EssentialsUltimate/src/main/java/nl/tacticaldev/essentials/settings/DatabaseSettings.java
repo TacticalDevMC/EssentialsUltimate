@@ -27,47 +27,47 @@ public class DatabaseSettings implements IDatabaseSettings {
 
     @Override
     public String getDBHost() {
-        return config.getConfiguration().getString("MySQL.host", "");
+        return config.getString("MySQL.host", "");
     }
 
     @Override
     public String getDBUser() {
-        return config.getConfiguration().getString("MySQL.user", "");
+        return config.getString("MySQL.user", "");
     }
 
     @Override
     public String getDBPassword() {
-        return config.getConfiguration().getString("MySQL.password", "");
+        return config.getString("MySQL.password", "");
     }
 
     @Override
     public String getDatabase() {
-        return config.getConfiguration().getString("MySQL.database", "");
+        return config.getString("MySQL.database", "");
     }
 
     @Override
     public Integer getDBPort() {
-        return config.getConfiguration().getInt("MySQL.port", 3306);
+        return config.getInt("MySQL.port", 3306);
     }
 
     @Override
     public boolean isDBPoolSizeEnabled() {
-        return config.getConfiguration().getBoolean("MySQL.poolSize.enabled", false);
+        return config.getBoolean("MySQL.poolSize.enabled", false);
     }
 
     @Override
     public Integer getDBMaxPoolSize() {
-        return config.getConfiguration().getInt("MySQL.poolSize.max", 30);
+        return config.getInt("MySQL.poolSize.max", 30);
     }
 
     @Override
     public Integer getDBMinPoolSize() {
-        return config.getConfiguration().getInt("MySQL.poolSize.min", 10);
+        return config.getInt("MySQL.poolSize.min", 10);
     }
 
     @Override
     public boolean isReadOnly() {
-        return config.getConfiguration().getBoolean("MySQL.read-only", false);
+        return config.getBoolean("MySQL.read-only", false);
     }
 
     @Override

@@ -67,7 +67,7 @@ onJoin:
   # Use "none" to the world's spawnpoint, use the name of an exists spawn to teleport to it.
   spawnOnJoin: "none"
 
-newBies:
+newbies:
   # Use "none" to spawn on the World's spawnpoint, if you change "none" to a exists spawn, the player will be teleported to it
   spawn: "none"
   # Use {PLAYER} to get the player's name, use {USERNAME} to get the player's displayname
@@ -80,6 +80,9 @@ heal-cooldown: 60
 # This resets the player's speed to the default if they don't have essentials.speed.
 # If the player doesn't have essentials.speed.bypass, this resets their speed to the maximum specified above.
 world-change-speed-reset: true
+
+# Control per warp permission
+per-warp-permission: false
 
 # Backup runs a batch/bash command while saving is disabled.
 backup:
@@ -141,6 +144,9 @@ currency-symbol: '$'
 # Enable this to make the currency symbol appear at the end of the amount rather than at the start.
 # For example, the euro symbol typically appears after the current amount.
 currency-symbol-suffix: false
+
+# This configsection serves to modify the powertool
+powertool-item: STICK
 
 ####################################################################
 # +--------------------------------------------------------------+ #

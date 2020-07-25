@@ -82,4 +82,10 @@ public interface ISettings extends IConf {
 
     Integer getCooldownOnSign();
 
+    boolean getPerWarpPermission();
+
+    Integer getHealFeedCooldown();
+
+    boolean isWorldChangeSpeedReset();
+
 }

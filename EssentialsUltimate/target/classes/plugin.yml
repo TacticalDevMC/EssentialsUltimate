@@ -16,3 +16,82 @@ commands:
     aliases:
       - tpoffline
       - tpoffl
+  setspawn:
+    description: "Setspawn command"
+    aliases:
+      - spawnset
+      - sspawn
+  spawns:
+    description: "List all the spawns"
+    aliases:
+      - spawnslist
+      - listspawns
+  spawn:
+    description: "Teleport to a spawn"
+    aliases:
+      - telespawn
+      - spawntele
+      - spawnteleport
+  deletespawn:
+    description: "Delete a spawn"
+    aliases:
+      - delspawn
+      - spawndelete
+      - spawndele
+  ban:
+    description: "Ban a player"
+    aliases:
+      - eban
+  tempban:
+    description: "TemppBan a player"
+    aliases:
+      - etempban
+      - tban
+      - bantemp
+      - ebantemp
+      - etban
+  ipban:
+    description: "IPBan a player"
+    aliases:
+      - eipban
+      - iban
+      - eiban
+  heal:
+    description: "Heal a player"
+    aliases:
+      - eheal
+  language:
+    description: "Lang command"
+    aliases:
+      - lang
+      - elang
+      - elanguage
+  setwarp:
+    descripiton: "Set a warp"
+    aliases:
+      - createwarp
+      - ecreatewarp
+      - esetwarp
+  warp:
+    description: "Teleport to a warp"
+    aliases:
+      - teleportwarp
+      - tpwarp
+      - ewarp
+      - etpwarp
+  essentials:
+    description: "Essentials command"
+    aliases:
+      - essentialsultimate
+      - ess
+      - essultimate
+      - eultimate
+  clear:
+    description: "Clear a inventory of a player"
+    aliases:
+      - eclear
+      - eclearinventory
+      - clearinventory
+      - clearinv
+      - ci
+      - eci

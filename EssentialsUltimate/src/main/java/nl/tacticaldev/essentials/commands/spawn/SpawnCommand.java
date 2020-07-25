@@ -28,9 +28,8 @@ public class SpawnCommand extends CoreCommand {
 
     @Override
     public void execute() throws CoreException {
-        ISettings settings = Essentials.getInstance().getSettings();
         EssentialsPlayer base = new EssentialsPlayer(getPlayer());
-        Spawns spawns = Essentials.getInstance().getSpawns();
+        Spawns spawns = ess.getSpawns();
 
         if (getArgs().length == 0) {
             if (settings.getDefaultSpawn().equals("none")) {
@@ -39,26 +38,20 @@ public class SpawnCommand extends CoreCommand {
                 base.teleport(worldSpawn);
             } else if (!settings.getDefaultSpawn().equals("none")) {
                 if (spawns.getSpawn(settings.getDefaultSpawn()) == null) {
-                    EssentialsMessages.SPAWN_DEFAULT_SPAWN_CAN_NOT_BE_FOUND.send(getPlayer());
+                    user.sendMessage(EssentialsMessages.SPAWN_DEFAULT_SPAWN_CAN_NOT_BE_FOUND);
                     return;
                 }
 
-                Location location = spawns.getSpawnLocation(settings.getDefaultSpawn());
-
-                base.teleport(location);
-                EssentialsMessages.SPAWN_TELEPORTED_TO_DEFAULT.send(getPlayer());
+                user.spawn(getArgs()[0], getNewExceptionFuture(user.getBase(), getName()));
             }
             return;
         }
 
         if (spawns.getSpawn(getArgs()[0]) == null) {
-            EssentialsMessages.SPAWN_SPAWN_NOT_EXISTS.send(getPlayer(), getArgs()[0]);
+            user.sendMessage(EssentialsMessages.SPAWN_SPAWN_NOT_EXISTS, getArgs()[0]);
             return;
         }
 
-        Location location = spawns.getSpawnLocation(getArgs()[0]);
-
-        base.teleport(location);
-        EssentialsMessages.SPAWN_TELEPORTED.send(base.getBase(), getArgs()[0]);
+        user.spawn(getArgs()[0], getNewExceptionFuture(user.getBase(), getName()));
     }
 }

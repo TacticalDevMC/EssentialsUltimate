@@ -32,14 +32,14 @@ public class IPBanCommand extends CoreCommand {
         final String reason = Utils.buildReason(getArgs());
         final String banner = Utils.getName(getSender());
         if (getArgs().length <= 0) {
-            EssentialsMessages.IPBAN_ARSG.send(getSender());
+            user.sendMessage(EssentialsMessages.IPBAN_ARSG);
             return;
         }
 
         String name = getArgs()[0];
 
         if (name.isEmpty()) {
-            EssentialsMessages.PLAYER_ERROR.send(getSender(), getArgs()[0]);
+            user.sendMessage(EssentialsMessages.PLAYER_ERROR, getArgs()[0]);
             return;
         }
 
@@ -53,7 +53,7 @@ public class IPBanCommand extends CoreCommand {
             }
             ip = Essentials.getInstance().getBanManager().getIP(name);
             if (ip == null) {
-                EssentialsMessages.IPBAN_NO_IP_RECORD_FOUND.send(getSender(), name);
+                user.sendMessage(EssentialsMessages.IPBAN_NO_IP_RECORD_FOUND, name);
                 return;
             }
 
@@ -65,7 +65,7 @@ public class IPBanCommand extends CoreCommand {
         EssentialsPlayerIP playerIP = new EssentialsPlayerIP(ip);
 
         if (ban != null && !(ban instanceof TempIPBan) && playerIP.isBanned(ip)) {
-            EssentialsMessages.IPBAN_IP_ALREADY_BANNED.send(getSender(), ip);
+            user.sendMessage(EssentialsMessages.IPBAN_IP_ALREADY_BANNED, ip);
             return;
         }
 

@@ -40,127 +40,132 @@ public class Settings implements ISettings {
 
     @Override
     public boolean isDebug() {
-        return config.getConfiguration().getBoolean("debug", false);
+        return config.getBoolean("debug", false);
     }
 
     @Override
     public String getLanguage() {
-        return config.getConfiguration().getString("language", "nl");
+        return config.getString("language", "nl");
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        config.set("language", language.toUpperCase());
     }
 
     @Override
     public String getPrefix() {
-        return replaceColor(config.getConfiguration().getString("prefix", "&6&lESSENTIALS &8● "));
+        return replaceColor(config.getString("prefix", "&6&lESSENTIALS &8● "));
     }
 
     @Override
     public String getNoPermissions() {
-        return replaceColor(config.getConfiguration().getString("noPerms", "&cU hebt hier geen permissions voor! U hebt de permission &4%permission% &cnodig!"));
+        return replaceColor(config.getString("noPerms", "&cU hebt hier geen permissions voor! U hebt de permission &4%permission% &cnodig!"));
     }
 
     @Override
     public boolean isCustomJoinMessage() {
-        return config.getConfiguration().getBoolean("onJoin.message.isCustom", false);
+        return config.getBoolean("onJoin.message.isCustom", false);
     }
 
     @Override
     public String getCustomJoinMessage() {
-        return config.getConfiguration().getString("onJoin.message.text");
+        return config.getString("onJoin.message.text");
     }
 
     @Override
     public String getCurrencySymbol() {
-        return config.getConfiguration().getString("currency-symbol", "$").concat("$").substring(0, 1).replaceAll("[0-9]", "$");
+        return config.getString("currency-symbol", "$").concat("$").substring(0, 1).replaceAll("[0-9]", "$");
     }
 
     @Override
     public boolean isCurrencySymbolSuffixed() {
-        return config.getConfiguration().getBoolean("currency-symbol-suffix", false);
+        return config.getBoolean("currency-symbol-suffix", false);
     }
 
     @Override
     public boolean isCommandCooldown(String command) {
-        return config.getConfiguration().getBoolean("cooldowns." + command + ".enabled", false);
+        return config.getBoolean("cooldowns." + command + ".enabled", false);
     }
 
     @Override
     public Integer getCommandCooldownDelay(String command) {
-        return config.getConfiguration().getInt("cooldowns." + command + ".delay", 5);
+        return config.getInt("cooldowns." + command + ".delay", 5);
     }
 
     @Override
     public String getAfkListName() {
-        return config.getConfiguration().getString("afk-list-name", "none");
+        return config.getString("afk-list-name", "none");
     }
 
     @Override
     public Integer getAutoAfkKick() {
-        return config.getConfiguration().getInt("auto-afk-kick", -1);
+        return config.getInt("auto-afk-kick", -1);
     }
 
     @Override
     public Integer getAutoAfk() {
-        return config.getConfiguration().getInt("auto-afk", 300);
+        return config.getInt("auto-afk", 300);
     }
 
     @Override
     public boolean isToSpawnOnJoin() {
-        return config.getConfiguration().getBoolean("onJoin.toSpawn", true);
+        return config.getBoolean("onJoin.toSpawn", true);
     }
 
     @Override
     public String getSpawnOnJoin() {
-        return config.getConfiguration().getString("onJoin.spawnOnJoin", "none");
+        return config.getString("onJoin.spawnOnJoin", "none");
     }
 
     @Override
     public String getNewbiesSpawn() {
-        return config.getConfiguration().getString("newBies.spawn", "none");
+        return config.getString("newbies.spawn", "none");
     }
 
     @Override
     public String getNewbiesMessage() {
-        return config.getConfiguration().getString("newBies.message", "&6{PLAYER} &5Is nieuw op de server!");
+        return config.getString("newbies.message", "&6{PLAYER} &5Is nieuw op de server!");
     }
 
     @Override
     public String getDefaultSpawn() {
-        return config.getConfiguration().getString("default-spawn", "none");
+        return config.getString("default-spawn", "none");
     }
 
     @Override
     public String getDefaultAppealMessage() {
-        return config.getConfiguration().getString("default-appeal-message", "none");
+        return config.getString("default-appeal-message", "none");
     }
 
     @Override
     public String getBannedKickMessage() {
-        return config.getConfiguration().getString("disconnection.you-are-banned", "&fU bent verbannen!\n Reason: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}");
+        return config.getString("disconnection.you-are-banned", "&fU bent verbannen!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}");
     }
 
     @Override
     public Integer getHistoryExpireyMinutes() {
-        return config.getConfiguration().getInt("history-expirey.minutes", 10080);
+        return config.getInt("history-expirey.minutes", 10080);
     }
 
     @Override
     public String getDefaultReason() {
-        return config.getConfiguration().getString("default-reason", "Misconduct");
+        return config.getString("default-reason", "Misconduct");
     }
 
     @Override
     public String getPlayerBannedAnnouncement() {
-        return config.getConfiguration().getString("announcement.player-was-banned", "&a{banner}&f banned &a{name}&f voor &a'{reason}'&f.");
+        return config.getString("announcement.player-was-banned", "&a{banner}&f banned &a{name}&f voor &a'{reason}'&f.");
     }
 
     @Override
     public String getTempBanKickMessage() {
-        return config.getConfiguration().getString("disconnection.you-are-temp-banned", "&fU bent voor een tijdje verbannen!\nReason: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}");
+        return config.getString("disconnection.you-are-temp-banned", "&fU bent voor een tijdje verbannen!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}");
     }
 
     @Override
     public Integer getMaxTempbanTime() {
-        return config.getConfiguration().getInt("MaxTempbanTime", 604800);
+        return config.getInt("MaxTempbanTime", 604800);
     }
 
     @Override
@@ -169,22 +174,52 @@ public class Settings implements ISettings {
     }
 
     @Override
+    public String getIPBanKickMessage() {
+        return config.getString("disconnection.you-are-ipbanned", "&fU bent IP banned!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\n{appeal-message}");
+    }
+
+    @Override
+    public String getTempIPBanKickMessage() {
+        return config.getString("you-are-temp-ipbanned", "&fU bent tijdelijk IP Banned!\nReden: &a'{reason}'&f\nDoor &a{banner}&f.\nEindigd in: {time}.\n{appeal-message}");
+    }
+
+    @Override
+    public String getPlayerIpBannedAnnouncement() {
+        return config.getString("announcement.player-was-ip-banned", "&a{banner} &fIP banned &a{name} &f('&a{ip}&f') voor &a'{reason}'&f.");
+    }
+
+    @Override
     public boolean isUsingEssentialsSigns() {
-        return config.getConfiguration().getBoolean("using-essentials-signs", true);
+        return config.getBoolean("using-essentials-signs", true);
     }
 
     @Override
     public List<String> getEnabledSigns() {
-        return config.getConfiguration().getStringList("enabledSigns");
+        return config.getStringList("enabledSigns");
     }
 
     @Override
     public boolean isUsingCooldownsOnSign() {
-        return config.getConfiguration().getBoolean("use-cooldowns-on-signs", false);
+        return config.getBoolean("use-cooldowns-on-signs", false);
     }
 
     @Override
     public Integer getCooldownOnSign() {
-        return config.getConfiguration().getInt("cooldown-on-sign", 3);
+        return config.getInt("cooldown-on-sign", 3);
+    }
+
+    @Override
+    public boolean getPerWarpPermission() {
+        return config.getBoolean("per-warp-permission", false);
+    }
+
+    @Override
+    public Integer getHealFeedCooldown() {
+        return config.getInt("heal-cooldown", 60);
+    }
+
+    @Override
+    public boolean isWorldChangeSpeedReset() {
+        return config.getBoolean("world-change-speed-reset", true);
     }
 }

@@ -1,4 +1,4 @@
-package nl.tacticaldev.essentials;
+package nl.tacticaldev.essentials.metrics;
 // Plugin made by TacticalDev
 // Do not copy this plugin, and use it in you're own plugins.
 // This plugin belong to Joran (TacticalDev) Discord: Joran#7925
@@ -109,6 +109,7 @@ public class Metrics {
             }
 
             Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
+
             if (!found) {
                 startSubmitting();
             }

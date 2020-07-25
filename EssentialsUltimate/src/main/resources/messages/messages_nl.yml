@@ -45,6 +45,20 @@ commands:
     args: "%prefix% &7Gebruik: &c/heal [player]&7."
     playerHealed: "%prefix% &aU hebt jezelf gehealed!"
     targetHealed: "%prefix% &aU hebt de speler &2%s &agehealed!"
+  setwarp:
+    invalidWarpName: "%prefix% &cDe warp naam &4&l%s &cis invalid."
+    warpSet: "%prefix% &aDe warp &2&l%s &ais gezet."
+  warp:
+    noListPerms: "%prefix% &cU hebt geen permissions om de warps lijst te zien."
+    noWarpsDefined: "%prefix% &cEr zijn geen warps gedefineerd."
+    warpsCount: "&6Er zijn &7%s &6warps. Showing pagina &7%s &6of &7%s&6."
+    warpList: "&6%s"
+    warps: "&6Warps: &7%s"
+    noWarpPermission: "%prefix% &cU hebt geen permissions om deze warp te gebruiken."
+    warpingTo: "&6Warping to: &c%s"
+  clear:
+    args: "%prefix% &7Gebruik: &c/clear <player>&7."
+    inventoryCleared: "%prefix% &aU hebt uw inventory gecleared!"
 
 signs:
   heal:

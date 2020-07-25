@@ -9,6 +9,7 @@ import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.interfaces.IEssentials;
 import nl.tacticaldev.essentials.managers.messages.enums.EssentialsMessages;
 import nl.tacticaldev.essentials.managers.spawn.Spawns;
+import nl.tacticaldev.essentials.managers.spawn.exception.SpawnNotFoundException;
 import nl.tacticaldev.essentials.player.EssentialsPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -56,7 +57,12 @@ public class PlayerInteractSignListener implements Listener {
 
                     EssentialsPlayer base = new EssentialsPlayer(player);
 
-                    Location location = spawns.getSpawnLocation(spawnName);
+                    Location location = null;
+                    try {
+                        location = spawns.getSpawnLocation(spawnName);
+                    } catch (SpawnNotFoundException e) {
+                        e.printStackTrace();
+                    }
 
                     base.teleport(location);
                 } else if (sign.getLine(0).equals(Utils.replaceColor("&7[&6EssentialsSigns&7]")) && sign.getLine(1).equals(Utils.replaceColor("&9Heal")) && sign.getLine(2).equals(Utils.replaceColor("&2&lClicker"))) {

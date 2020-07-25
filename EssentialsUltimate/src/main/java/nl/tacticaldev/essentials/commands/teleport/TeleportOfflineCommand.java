@@ -41,30 +41,21 @@ public class TeleportOfflineCommand extends CoreCommand {
         Player target = Bukkit.getPlayer(getArgs()[0]);
 
         if (target != null) {
-            EssentialsMessages.TELEPORT_OFFLINE_PLAYER_IS_ONLINE.send(getPlayer());
+            user.sendMessage(EssentialsMessages.TELEPORT_OFFLINE_PLAYER_IS_ONLINE);
             return;
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(getArgs()[0]);
 
         EssentialsOfflinePlayer baseOffline = new EssentialsOfflinePlayer(offlinePlayer);
-        EssentialsPlayer base = new EssentialsPlayer(getPlayer());
 
         if (!new PlayerTable().existsPlayer(baseOffline.getBase().getUniqueId())) {
-            EssentialsMessages.PLAYER_NOT_FOUND_IN_DATABASE.send(getPlayer(), getArgs()[0]);
+            user.sendMessage(EssentialsMessages.PLAYER_NOT_FOUND_IN_DATABASE, getArgs()[0]);
             return;
         }
 
-        World world = Bukkit.getWorld(baseOffline.getLastLocationWorld());
-
-        int x = baseOffline.getLastLocation("x");
-        int y = baseOffline.getLastLocation("y");
-        int z = baseOffline.getLastLocation("z");
-
-        Location loc = new Location(world, x, y, z);
-
-        base.teleport(loc);
-        EssentialsMessages.TELEPORT_OFFLINE_TELEPORTED.send(getPlayer(), baseOffline.getBase().getName());
+        user.teleport(baseOffline.getLastLocation());
+        user.sendMessage(EssentialsMessages.TELEPORT_OFFLINE_TELEPORTED, baseOffline.getBase().getName());
     }
 
     @Override
