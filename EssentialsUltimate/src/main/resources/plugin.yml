@@ -66,3 +66,32 @@ commands:
       - lang
       - elang
       - elanguage
+  setwarp:
+    descripiton: "Set a warp"
+    aliases:
+      - createwarp
+      - ecreatewarp
+      - esetwarp
+  warp:
+    description: "Teleport to a warp"
+    aliases:
+      - teleportwarp
+      - tpwarp
+      - ewarp
+      - etpwarp
+  essentials:
+    description: "Essentials command"
+    aliases:
+      - essentialsultimate
+      - ess
+      - essultimate
+      - eultimate
+  clear:
+    description: "Clear a inventory of a player"
+    aliases:
+      - eclear
+      - eclearinventory
+      - clearinventory
+      - clearinv
+      - ci
+      - eci

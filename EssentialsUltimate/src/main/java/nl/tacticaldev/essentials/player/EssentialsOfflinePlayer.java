@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import nl.tacticaldev.essentials.Essentials;
 import nl.tacticaldev.essentials.database.sql.SQLManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -28,7 +29,7 @@ public class EssentialsOfflinePlayer {
     }
 
     public EssentialsOfflinePlayer(String name) {
-        this.base = Bukkit.getPlayer(name);
+        this.base = Bukkit.getOfflinePlayer(name);
     }
 
     public OfflinePlayer getBase() {
@@ -61,6 +62,23 @@ public class EssentialsOfflinePlayer {
         return 0;
     }
 
+    public void updateTotalBans(Integer bans) {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "UPDATE " + sqlManager.getTable("players") + " SET totalBans=? WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, bans);
+            preparedStatement.setString(2, base.getUniqueId().toString());
+
+            preparedStatement.executeUpdate();
+
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            Logger.ERROR.log(ex);
+        }
+    }
+
     public Integer getTotalKicks() {
         try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
             String query = "SELECT * FROM " + sqlManager.getTable("players") + " WHERE player_uuid=?";
@@ -81,6 +99,23 @@ public class EssentialsOfflinePlayer {
             Logger.ERROR.log(e);
         }
         return 0;
+    }
+
+    public void updateTotalKicks(Integer kicks) {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "UPDATE " + sqlManager.getTable("players") + " SET totalKicks=? WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, kicks);
+            preparedStatement.setString(2, base.getUniqueId().toString());
+
+            preparedStatement.executeUpdate();
+
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            Logger.ERROR.log(ex);
+        }
     }
 
     public Integer getTotalMutes() {
@@ -105,6 +140,23 @@ public class EssentialsOfflinePlayer {
         return 0;
     }
 
+    public void updateTotalMutes(Integer mutes) {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "UPDATE " + sqlManager.getTable("players") + " SET totalMutes=? WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, mutes);
+            preparedStatement.setString(2, base.getUniqueId().toString());
+
+            preparedStatement.executeUpdate();
+
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            Logger.ERROR.log(ex);
+        }
+    }
+
     public Integer getTotalWarns() {
         try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
             String query = "SELECT * FROM " + sqlManager.getTable("players") + " WHERE player_uuid=?";
@@ -125,6 +177,23 @@ public class EssentialsOfflinePlayer {
             Logger.ERROR.log(e);
         }
         return 0;
+    }
+
+    public void updateTotalWarns(Integer warns) {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "UPDATE " + sqlManager.getTable("players") + " SET totalWarns=? WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, warns);
+            preparedStatement.setString(2, base.getUniqueId().toString());
+
+            preparedStatement.executeUpdate();
+
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            Logger.ERROR.log(ex);
+        }
     }
 
     public String getLastLocationWorld() {
@@ -182,6 +251,28 @@ public class EssentialsOfflinePlayer {
             Logger.ERROR.log(e);
         }
         return 0;
+    }
+
+    public Location getLastLocation() {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "SELECT * FROM " + sqlManager.getTable("players") + " WHERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, getBase().getUniqueId().toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return new Location(Bukkit.getWorld(getLastLocationWorld()), resultSet.getInt("lastLocationX"), resultSet.getInt("lastLocationY"), resultSet.getInt("lastLocationZ"));
+            }
+
+            resultSet.close();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger.ERROR.log(e);
+        }
+        return Bukkit.getWorld(getLastLocationWorld()).getSpawnLocation();
     }
 
     public void updateLastLocationWorld(World world) {
@@ -259,6 +350,28 @@ public class EssentialsOfflinePlayer {
         } catch (SQLException e) {
             Logger.ERROR.log(e);
         }
+    }
+
+    public String getLastSeen() {
+        try (Connection connection = Essentials.getInstance().getAPI().getDatabase().getConnection()) {
+            String query = "SELECT * FROM " + sqlManager.getTable("players") + " WERE player_uuid=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, base.getUniqueId().toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return resultSet.getString("lastSeen");
+            }
+
+            resultSet.close();
+            connection.close();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            Logger.ERROR.log(ex);
+        }
+        return "Unknown";
     }
 
 }
